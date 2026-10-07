@@ -50,7 +50,7 @@ Bailey & López de Prado, *The Sharpe Ratio Efficient Frontier* (2012): benchmar
 
 Formula reference and numerical test oracle: **ranaroussi/quantstats 0.0.77**, Apache-2.0. Independent TypeScript implementation; no upstream source copied. QuantStats and Python are **not** installed in the production image. The cowork-only venv adds pinned IPython 9.6.0 because this QuantStats release imports it without declaring it. Complete resolved versions are recorded in `tests/fixtures/results-oracle-requirements.txt`.
 
-`tests/results-record.mjs` records two real 180-day strategy ledgers (Kraken ETH/USDT and OKX SOL/USDT), both real BTC reference ledgers, and one independently authored synthetic ledger. `tests/results-oracle.py` produces the committed JSON fixture. All sixteen same-definition metrics and every computable 30/90 rolling point are compared at risk-free 0% and 4%, with **abs error <= 1e-8 + 1e-8 * abs(expected)**. CI reads JSON and needs only Node. This is numerical convention parity on these inputs, not independent financial validation or profitability evidence.
+`tests/results-record.mjs` records two real 180-day strategy ledgers (Kraken ETH/USDT and OKX SOL/USDT), both real BTC reference ledgers, and one independently authored synthetic ledger. `tests/results-oracle.py` produces the committed JSON fixture. All fifteen same-definition metrics and every computable 30/90 rolling point are compared at risk-free 0% and 4%, with **abs error <= 1e-8 + 1e-8 * abs(expected)**. CI reads JSON and needs only Node. This is numerical convention parity on these inputs, not independent financial validation or profitability evidence.
 
 Definitions deliberately differ, so separate hand-computed fixtures cover them:
 
