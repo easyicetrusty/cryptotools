@@ -1,5 +1,9 @@
 # What’s new
 
+## 0.7.2-beta.2 · Withhold pending portfolio results after access changes
+- Recheck portfolio permission after awaited tool work and before every later model HTTP request. Both native and compatible protocols abort instead of relaying pending or earlier portfolio results after the toggle is disabled. Later tool schemas omit the portfolio tool.
+- Clear access-changed error; four asynchronous permission-change regressions. Original v0.7.2 tag/image retained and superseded, never rewritten.
+
 ## 0.7.2 · Everyday use
 - Persistent shared per-provider daily token budgets and rolling request limits cover chat, every worker and every tool round. Defaults 50,000 budgeted tokens / UTC day and 10 requests / minute; unlimited only by explicit choice. Visible meters and cap/reset messages. Conservative estimates are not billing guarantees.
 - OpenCode Zen preset limited to documented chat-completions/tool-capable models; protocol-incompatible models excluded. Official free-model privacy exceptions disclosed, no bundled key. Mock-only AI compatibility checks.

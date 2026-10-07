@@ -2,7 +2,7 @@
 
 Candidate checked in cowork, Node 22. These are self-checks, not an independent security or financial-method audit.
 
-- 168 backend/recorded/synthetic tests, including shared budgets, UTC rollover, native/compatible tool removal, Zen two-HTTP-call tool roundtrip, presets, history and all twelve connector parsers.
+- 172 backend/recorded/synthetic tests, including shared budgets, UTC rollover, native/compatible tool removal, four asynchronous pending/prior-result permission-change regressions, Zen two-HTTP-call tool roundtrip, presets, history and all twelve connector parsers.
 - Browser exercises the actual forms and server: cap/privacy/RPM refusal, a four-worker job, JSON upload/download without running, own-channel test buttons, restart persistence and source revocation.
 - Kraken prices and tuning/unseal candles are live public data from an explicitly enabled source. AI replies, Telegram, SMTP and the deliberate Bybit failure are labelled mocks. No live provider/channel credentials are validated.
 - Upgrade from the original published 0.7.1 image retains login, provider configuration, paper holding and the entire frozen saved-run response. Replay changes only `manifest.appVersion`; notification channels start off.
