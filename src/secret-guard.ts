@@ -23,4 +23,5 @@ export class SecretGuard {
   return false;
  }
  assert(text:string){if(!safeComment(text)||this.contains(text))throw new ControlError('Remove sensitive information. Nothing was sent.','sensitive_text');}
+ assertValue(value:unknown,depth=0):void{if(depth>30)throw new ControlError('Outbound text is too deeply nested. Nothing was sent.','sensitive_text');if(typeof value==='string'){this.assert(value);try{const parsed=JSON.parse(value);if(parsed!==value)this.assertValue(parsed,depth+1);}catch(error){if(error instanceof ControlError)throw error;}}else if(value&&typeof value==='object'){for(const [key,item] of Object.entries(value)){this.assert(key);this.assertValue(item,depth+1);}}}
 }
