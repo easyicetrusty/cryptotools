@@ -1,0 +1,11 @@
+import {randomBytes,scryptSync,timingSafeEqual,createHash,createCipheriv,createDecipheriv,createHmac} from 'node:crypto';
+import {existsSync,readFileSync,writeFileSync,chmodSync} from 'node:fs';
+export function hashPassword(p:string){const salt=randomBytes(16).toString('hex');return salt+':'+scryptSync(p,salt,64).toString('hex');}
+export function verifyPassword(p:string,h:string){const [s,v]=h.split(':');const b=Buffer.from(v,'hex');return timingSafeEqual(scryptSync(p,s,64),b);}
+export const digest=(s:string)=>createHash('sha256').update(s).digest('hex');
+export function vault(path:string){if(!process.env.MASTER_SECRET&&!existsSync(path))writeFileSync(path,randomBytes(32),{mode:0o600,flag:'wx'});if(!process.env.MASTER_SECRET)chmodSync(path,0o600);const material=process.env.MASTER_SECRET||readFileSync(path);if(Buffer.byteLength(material)<32)throw Error('Master encryption material must be at least 32 bytes');const key=createHash('sha256').update(material).digest();return {encrypt(text:string){const iv=randomBytes(12),c=createCipheriv('aes-256-gcm',key,iv);return Buffer.concat([iv,c.update(text),c.final(),c.getAuthTag()]).toString('base64');},decrypt(text:string){const raw=Buffer.from(text,'base64'),d=createDecipheriv('aes-256-gcm',key,raw.subarray(0,12));d.setAuthTag(raw.subarray(-16));return Buffer.concat([d.update(raw.subarray(12,-16)),d.final()]).toString();}};}
+const alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+export function newTotpSecret(){return [...randomBytes(20)].map(n=>alphabet[n%32]).join('');}
+function decode(secret:string){let bits='';for(const c of secret)bits+=alphabet.indexOf(c).toString(2).padStart(5,'0');return Buffer.from((bits.match(/.{8}/g)??[]).map(b=>parseInt(b,2)));}
+export function totp(secret:string,time=Date.now()){const counter=Buffer.alloc(8);counter.writeBigUInt64BE(BigInt(Math.floor(time/30000)));const h=createHmac('sha1',decode(secret)).update(counter).digest(),o=h[19]&15;return String((h.readUInt32BE(o)&0x7fffffff)%1000000).padStart(6,'0');}
+export function verifyTotp(secret:string,code:string){return /^\d{6}$/.test(code)&&[-1,0,1].some(n=>{const a=Buffer.from(totp(secret,Date.now()+n*30000)),b=Buffer.from(code);return timingSafeEqual(a,b);});}

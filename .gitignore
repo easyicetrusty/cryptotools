@@ -5,3 +5,12 @@ evidence/
 *.tar
 
 test-tools/
+
+evidence-step3/
+test-data/
+test-local-data/
+test-scan/
+test-scan-home/
+ollama-data/
+*.sqlite*
+*.secret
