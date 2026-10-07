@@ -18,7 +18,7 @@ SMTP and custom AI destinations resolve anew for each connection. All returned a
 
 In normal Docker Compose, `127.0.0.1` means the app container. For self-hosted Ollama, share the app container's network namespace with a separate Ollama service (`network_mode: service:app` for the Ollama service, with Ollama listening on 127.0.0.1:11434). Keep Ollama's port unpublished and retain the app's loopback-only port binding. Configure the Ollama endpoint `http://127.0.0.1:11434/v1` and explicitly enable the loopback setting. This is a deployment example, not native-platform validation; bring your own reviewed Ollama image/model and resource limits. Do not expose either service publicly.
 
-The operator-controlled FEEDBACK_URL defaults to the companion service on the Docker private network. It is not a user API field; internal feedback service access is intentional. Provider/data endpoints and Telegram's origin are otherwise fixed or checked. Protect operator environment configuration.
+FEEDBACK_URL defaults to the fixed companion URL http://feedback:8081/feedback on the Docker private network. Only that exact service is exempted for private HTTP. Custom overrides require public HTTPS and are resolved/pinned per request for both feedback and telemetry. Private overrides fail before any connection. Provider/data endpoints and Telegram's origin are otherwise fixed or checked. Protect operator environment configuration.
 
 ## Refusals and sessions
 
