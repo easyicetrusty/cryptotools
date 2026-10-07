@@ -1,0 +1,7 @@
+node_modules/
+dist/
+public/
+evidence/
+*.tar
+
+test-tools/

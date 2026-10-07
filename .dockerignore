@@ -1,0 +1,10 @@
+.git
+node_modules
+dist
+public
+mockups
+tests
+evidence
+*.tar
+
+test-tools

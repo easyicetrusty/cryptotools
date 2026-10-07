@@ -1,0 +1,2 @@
+#!/bin/sh
+printf 'CAPTURED_BROWSER_OPEN %s\n' "$1"
