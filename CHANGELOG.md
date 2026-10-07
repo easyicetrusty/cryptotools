@@ -1,5 +1,11 @@
 # What’s new
 
+## 0.6.1 · Wider activity coverage
+- Surge universe defaults to 50 markets per enabled exchange, selectable 25/50/100. Visible scan progress, partial rows, market coverage and failed/incomplete histories. Mechanical ratio sort; ten rows initially with an all-scanned-markets control.
+- Two concurrent history jobs globally, one per venue, respecting ccxt rate limits. Identical scans coalesce and cache for five minutes; passive progress reads never start scans. Closed UTC candles persist and reuse across filters, universe changes and midnight; only gaps are fetched.
+- Exclude stablecoin-to-stablecoin pairs on by default for leaders and surges. Optional stablecoin-base exclusion off by default. Neutral reversible controls saved with universe size; conservative explicit code list with issuer source links, unknown codes unclassified.
+- Broader real Kraken/OKX captures in both themes at 390/1440. Existing source/access gates, approximate-turnover disclosures and beta boundaries remain unchanged.
+
 ## 0.6.0 · Observed activity and saved views
 - Trends from your enabled public sources only: spot volume leaders with exchange breakdowns and quote/data exclusions; lazy top-N volume ratios against thirty complete daily candles; selected-market initiating-side trade samples; persisted market-list changes; keyless perpetual funding, open interest and basis where supported.
 - Inline definitions, source links, timestamps/ages, unknown values and mini-charts when history exists. Wash-trading and stable-quote approximation notices stay visible on volume metrics.

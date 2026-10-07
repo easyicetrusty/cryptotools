@@ -12,7 +12,13 @@ USD, USDT, USDC, DAI, FDUSD and TUSD quotes assume one USD per unit. This is an 
 
 Rolling 24-hour turnover divided by that market's mean turnover over the previous thirty complete UTC daily candles. Daily quote turnover is approximated by base volume times closing price. This differs from exact intraday quote turnover and from a rolling 24-hour daily window. The current incomplete day is excluded. Thirty contiguous, unique daily candles and a positive average are required; insufficient history produces an unknown ratio, with available daily history still shown.
 
-Daily OHLCV is fetched only when this metric is requested. Universe: the top N USD-quoted spot markets by reported volume on each enabled venue, default three, user-selectable up to ten. This is a market universe, not N distinct assets. ccxt rate limiting stays enabled; requests within a source are awaited sequentially. Daily history caches for one hour and is keyed by UTC day. No whole-market historical crawler runs in the background.
+Daily OHLCV is fetched only when this metric is requested. Universe: the top N eligible USD-quoted spot markets by reported volume on each enabled venue, default 50, choices 25/50/100. Stablecoin filters apply before universe selection. This is a market universe, not N distinct assets. Coverage discloses all active spot markets, eligible normalized markets, completed attempts, failed/incomplete history and cache hits. Partial rows appear during scanning; displayed ratios sort numerically with unknowns last. Initially ten rows per venue are shown; expand to all scanned markets.
+
+History jobs are bounded to two globally and one per exchange. Starts respect ccxt rateLimit; ccxt weighted endpoint throttling stays enabled. Identical running/fresh scans coalesce for five minutes. Entering the view, changing controls or checking snapshots initiates one scan; progress polling only reads it and never launches another. Closed daily candles persist by exchange/symbol/time and are reused across filters, universe changes and midnight, including public test-bench candles and legacy trend history. Only contiguous missing ranges are requested. Incomplete/failed histories remain unknown; failures advance progress. No whole-market historical crawler runs in the background.
+
+## Stablecoin filters
+
+Leaders and surges default to excluding stablecoin-to-stablecoin pairs. A separate stablecoin-base exclusion defaults off. Both can be unticked/ticked and are saved with universe size in the single-user workspace. They are neutral classifications, not quality or safety judgments. Fiat USD is not a stablecoin; unknown token codes stay unclassified. The conservative list is maintained in `src/stablecoins.ts`, with issuer documentation links also shown in the UI: Tether USDT, Circle USDC/EURC, Sky DAI/USDS, First Digital FDUSD, TrueUSD TUSD, Paxos USDP/PYUSD/USDG/BUSD (BUSD retained for legacy market codes), Ethena USDE. Codes may collide and are not verified token identities or peg guarantees. Coverage counts stablecoin-filter exclusions separately. No flow or futures filtering is implied.
 
 ## Aggressor flow
 
@@ -42,7 +48,7 @@ The link preselects the actual spot exchange and symbol in the existing test ben
 
 ## Persistence and limits
 
-Volume/futures snapshots cache for five minutes, trades for one minute and listings for fifteen minutes. Disabled sources are checked before connector creation, each HTTP call and cached output. Network failures return unknown for that venue. There is no background polling or source enablement by the app.
+Volume/futures snapshots cache for five minutes, trades for one minute and listings for fifteen minutes. Disabled sources are checked before connector creation, each HTTP call and cached output. Network failures return unknown for that venue. Surge progress polling reads only the current scan while the view is open; it never starts a new fetch. The app never enables sources itself.
 
 Staking presets compose with manual filters, persist in the single-user workspace and are optional. The default remains asset A–Z with none applied. TVL threshold is editable. Explicit source categories alone map staking, liquid staking and lending; protocol names never infer a type. The promo/reward preset requires explicit non-promo status, positive base APY and zero reward APY, excluding unknowns. Contradictory custody presets produce an empty result.
 

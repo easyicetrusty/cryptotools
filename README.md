@@ -14,6 +14,7 @@ Licence: GNU Affero General Public License v3.0 (AGPL-3.0). See [LICENSE](LICENS
 - A BYOK assistant and four read-only background workers: research, backtest, risk and reviewer. Supported provider configurations: OpenAI, Anthropic, Mistral, Gemini's compatible endpoint, DeepSeek, OpenRouter and local Ollama. You choose the provider and model; provider charges may apply.
 - Neutral staking data from your enabled DefiLlama free/Pro, Lido and Bybit public earn connectors, plus read-only Kraken/Binance/OKX earn adapters tested against official examples, not real keys. Filters, sorting and timestamped SQLite caching preserve unknowns. Not a complete market survey. See [data-source notes](docs/DATA-SOURCES.md).
 - Trends from enabled public spot sources: volume leaders and exchange breakdowns, capped/lazy thirty-day volume ratios, recent initiating-side flow, market-list changes and supported public perpetual positioning. Definitions, timestamps, unknowns and volume-distortion notices; [metric methods and limits](docs/TRENDS.md). Test-bench links preselect the actual market for past-behaviour testing only.
+- Surge universe 25/50/100 (default 50 per exchange), bounded lazy scanning with visible progress/coverage and reused closed daily candles. Saved neutral stablecoin-pair exclusion defaults on, stablecoin-base exclusion defaults off; both reversible, with a conservative source-linked code list.
 - Optional, combinable staking filter presets, editable and saved per single-user workspace. Default view remains unfiltered asset A–Z. Unknown source categories are never guessed from protocol names.
 - Password login, optional authenticator TOTP, dark and light themes, in-app feedback and optional usage counters (off by default).
 
@@ -77,7 +78,7 @@ Download and review [compose.yaml](compose.yaml), then run from its directory:
 docker compose pull && docker compose up -d --wait --wait-timeout 180
 ```
 
-To pin a release instead of `latest`, set `CRYPTOTOOLS_IMAGE=ghcr.io/easyicetrusty/cryptotools:0.6.0` (PowerShell: `$env:CRYPTOTOOLS_IMAGE = 'ghcr.io/easyicetrusty/cryptotools:0.6.0'`). `APP_PORT` overrides port 8080 and `CRYPTOTOOLS_DIR` overrides the install directory. Repeat any overrides when updating or stopping. The Compose project name and volume names stay `cryptotools`; changing the install directory does not create a separate instance.
+To pin a release instead of `latest`, set `CRYPTOTOOLS_IMAGE=ghcr.io/easyicetrusty/cryptotools:0.6.1` (PowerShell: `$env:CRYPTOTOOLS_IMAGE = 'ghcr.io/easyicetrusty/cryptotools:0.6.1'`). `APP_PORT` overrides port 8080 and `CRYPTOTOOLS_DIR` overrides the install directory. Repeat any overrides when updating or stopping. The Compose project name and volume names stay `cryptotools`; changing the install directory does not create a separate instance.
 
 ## Where data goes
 
@@ -122,11 +123,17 @@ The 0.5.0 Data sources and empty-state renders show default-off connectors. Stak
 
 ### Observed-activity trends
 
-The 0.6.0 renders use real user-enabled Kraken and OKX public data captured on 7 October 2026. Daily volume ratios use thirty closed daily candles per market, trades show their actual sample coverage, and funding/open interest/basis are public OKX observations. USD stable quotes use a disclosed peg assumption, not verified FX conversion. These snapshots are not data bundled with the app.
+The 0.6.1 leaders/surges renders use real user-enabled Kraken and OKX public data captured on 7 October 2026 at universe 50, excluding stablecoin-to-stablecoin pairs. Both themes and 390/1440 widths show the wider market universe. The perpetual render remains from 0.6.0. Daily volume ratios use thirty closed daily candles per market, trades show their actual sample coverage, and funding/open interest/basis are public OKX observations. USD stable quotes use a disclosed peg assumption, not verified FX conversion. These snapshots are not data bundled with the app.
 
 ![Dark desktop real-source trends](docs/screenshots/night-trends-surges-1440.png)
 
-![Light mobile public perpetual metrics](docs/screenshots/clear-trends-futures-390.png)
+![Light mobile wider surge universe](docs/screenshots/v061-clear-surges-390.png)
+
+![Dark desktop volume leaders with pair exclusion](docs/screenshots/v061-night-leaders-1440.png)
+
+![Light mobile public perpetual metrics, captured in 0.6.0](docs/screenshots/clear-trends-futures-390.png)
+
+All eight 0.6.1 leaders/surges theme/width captures are in `docs/screenshots/v061-*.png`. Coverage: 50 of 1363 active Kraken markets and 50 of 1143 OKX markets; only eligible USD/stable-quoted markets enter the universe. Long-tail examples include ZEUS, MINA, SAND, SPX and ZRO. Two OKX histories were insufficient; their ratios remain unknown. These counts describe that capture, not fixed exchange coverage.
 
 ## Development and test status
 
@@ -136,7 +143,7 @@ Node 22 is required for the built-in SQLite API. From a fresh checkout:
 npm ci && npm test
 ```
 
-`npm test` builds TypeScript and the frontend before running unit tests. The 0.6.0 implementation passed 70 unit tests in cowork Node 22, including quote normalization, thirty-day maths, explicit initiating-side mapping, sample coverage, listing diffs, source gates, presets, UI-string scans and both read-only AI tool protocols. Browser integration captures all five metrics, staking presets and the bench link in both themes at 390/1440 using real Kraken/OKX/DefiLlama data. Preset reload persistence and cache hiding on source disable are checked. The 0.5.0 revision passed 51 unit tests and a fresh Docker build, with default-off/terms gates, zero-call disabled-source mocks, encrypted credential and permission-refusal checks, sandbox, strict unknowns and source/bundle transaction-call scans. Browser checks cover both themes at 390/1440: Data sources, onboarding, empty states and real enabled free DefiLlama data. An actual 0.4.0 data volume upgrade preserves password/holdings while disabling sources and hiding old cache. All five keyless spot connectors and public Bybit earn/Lido connection tests returned real data in the Linux VM. The 0.4.0 source revision passed 35 unit tests in a Linux VM, including recorded-real Lido normalization, strict unknown handling, neutral sorting/filtering, cache restart/concurrency/failure/staleness and both AI tool protocols. Staking renders use actual public Lido data in both themes at 390, 768, 1024 and 1440 pixels. Previous focused browser checks covered both themes at 390 and 1440 pixels, real public candles and mocked provider protocols.
+`npm test` builds TypeScript and the frontend before running unit tests. The 0.6.1 implementation passed 74 unit tests in cowork Node 22, adding scheduler concurrency/spacing, partial-failure progress, coalescing, daily-gap/public-bench cache reuse, midnight reuse and conservative stablecoin filters. The 0.6.0 implementation passed 70 unit tests in cowork Node 22, including quote normalization, thirty-day maths, explicit initiating-side mapping, sample coverage, listing diffs, source gates, presets, UI-string scans and both read-only AI tool protocols. Browser integration captures all five metrics, staking presets and the bench link in both themes at 390/1440 using real Kraken/OKX/DefiLlama data. Preset reload persistence and cache hiding on source disable are checked. The 0.5.0 revision passed 51 unit tests and a fresh Docker build, with default-off/terms gates, zero-call disabled-source mocks, encrypted credential and permission-refusal checks, sandbox, strict unknowns and source/bundle transaction-call scans. Browser checks cover both themes at 390/1440: Data sources, onboarding, empty states and real enabled free DefiLlama data. An actual 0.4.0 data volume upgrade preserves password/holdings while disabling sources and hiding old cache. All five keyless spot connectors and public Bybit earn/Lido connection tests returned real data in the Linux VM. The 0.4.0 source revision passed 35 unit tests in a Linux VM, including recorded-real Lido normalization, strict unknown handling, neutral sorting/filtering, cache restart/concurrency/failure/staleness and both AI tool protocols. Staking renders use actual public Lido data in both themes at 390, 768, 1024 and 1440 pixels. Previous focused browser checks covered both themes at 390 and 1440 pixels, real public candles and mocked provider protocols.
 
 **Native Windows and macOS installation are not yet verified.** PowerShell-on-Linux testing is not Windows testing. The arm64 release is checked under QEMU on Linux, not on native ARM hardware. Real hosted AI credentials have not been validated; provider support describes implemented configurations, not a compatibility guarantee.
 
