@@ -28,3 +28,6 @@ buddy.txt
 *.token
 tokens.json
 *.zip
+
+evidence-staking/
+staking-test-data/

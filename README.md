@@ -12,9 +12,10 @@ Licence: GNU Affero General Public License v3.0 (AGPL-3.0). See [LICENSE](LICENS
 - Historical hold, SMA crossover, daily weekly-trend and RSI tests with per-fill fees and slippage. Strategy results are compared with timestamp-aligned BTC hold using the same quote currency, starting capital and modeled costs.
 - Manual paper holdings valued with public Kraken quotes, plus CSV export. These are not exchange account balances. Different quote currencies are not summed.
 - A BYOK assistant and four read-only background workers: research, backtest, risk and reviewer. Supported provider configurations: OpenAI, Anthropic, Mistral, Gemini's compatible endpoint, DeepSeek, OpenRouter and local Ollama. You choose the provider and model; provider charges may apply.
+- A source-limited neutral staking view with asset/type/custody/lock-up/TVL/promo filters, user-controlled sorting and timestamped SQLite caching. Currently one verified Lido liquid-staking feed publishes APR; APY and unsourced fields remain unknown. This is not yet a cross-venue comparison. DefiLlama/exchange feeds remain excluded pending reuse permissions or read-only keys. See [data-source notes](docs/STAKING-SOURCES.md).
 - Password login, optional authenticator TOTP, dark and light themes, in-app feedback and optional usage counters (off by default).
 
-The assistant is instructed to return neutral data rather than recommendations. Model prose remains untrusted. Code limits its tools to public data, backtests and paper holdings; a prompt is not a security boundary.
+The assistant is instructed to return neutral data rather than recommendations. Model prose remains untrusted. Code limits its tools to public data, timestamped staking snapshots, backtests and paper holdings; a prompt is not a security boundary.
 
 ## Install
 
@@ -64,7 +65,7 @@ Download and review [compose.yaml](compose.yaml), then run from its directory:
 docker compose pull && docker compose up -d --wait --wait-timeout 180
 ```
 
-To pin a release instead of `latest`, set `CRYPTOTOOLS_IMAGE=ghcr.io/easyicetrusty/cryptotools:0.3.0` (PowerShell: `$env:CRYPTOTOOLS_IMAGE = 'ghcr.io/easyicetrusty/cryptotools:0.3.0'`). `APP_PORT` overrides port 8080 and `CRYPTOTOOLS_DIR` overrides the install directory. Repeat any overrides when updating or stopping. The Compose project name and volume names stay `cryptotools`; changing the install directory does not create a separate instance.
+To pin a release instead of `latest`, set `CRYPTOTOOLS_IMAGE=ghcr.io/easyicetrusty/cryptotools:0.4.0` (PowerShell: `$env:CRYPTOTOOLS_IMAGE = 'ghcr.io/easyicetrusty/cryptotools:0.4.0'`). `APP_PORT` overrides port 8080 and `CRYPTOTOOLS_DIR` overrides the install directory. Repeat any overrides when updating or stopping. The Compose project name and volume names stay `cryptotools`; changing the install directory does not create a separate instance.
 
 ## Where data goes
 
@@ -72,7 +73,7 @@ Your database, cached candles, paper holdings, backtest/job records and saved se
 
 There are important exceptions:
 
-- Public prices and candles are fetched from exchanges over the Internet.
+- Public prices and candles are fetched from exchanges over the Internet. Staking APR is fetched from the Lido public API, at most once per 15 minutes per database; source fetch timestamps and observation ages are shown, including stale cached data after failures.
 - If you enable a hosted AI provider, prompts and requested tool data, including paper holdings, go to that provider. Its terms and retention rules apply. Local Ollama avoids a hosted AI provider but requires a reachable model service and explicit endpoint configuration. Inside Docker, `127.0.0.1` refers to the container, not your host.
 - Feedback sends version, screen and what you type to the configured feedback service. The default is local. An overridden `FEEDBACK_URL` can be remote. Never paste private material; the free-text filter is incomplete.
 - Optional usage counters send only allowlisted names and counts to the configured feedback service. Opting out stops new counts, not deletion of existing counts.
@@ -89,6 +90,14 @@ Captured on 7 October 2026. Bench screenshots use 365 public Kraken BTC/USDT dai
 
 ![Paper portfolio with timestamped public Kraken quotes](docs/screenshots/night-portfolio-1440.png)
 
+### Source-limited staking information
+
+These 0.4.0 renders use a real anonymous Lido API snapshot fetched on 7 October 2026; the screen shows both retrieval and source-observation ages. APR is the published seven-day average, not compounded APY. Only one verified feed qualifies; absent venues and unknown fields are disclosed, not filled with samples. Details: [staking source notes](docs/STAKING-SOURCES.md).
+
+![Dark desktop source-limited staking data](docs/screenshots/night-staking-1440.png)
+
+![Light mobile source-limited staking data](docs/screenshots/clear-staking-390.png)
+
 ## Development and test status
 
 Node 22 is required for the built-in SQLite API. From a fresh checkout:
@@ -97,7 +106,7 @@ Node 22 is required for the built-in SQLite API. From a fresh checkout:
 npm ci && npm test
 ```
 
-`npm test` builds TypeScript and the frontend before running unit tests. The prepared revision passed 21 unit tests and a linux/amd64 Docker build in a Linux VM. Previous focused browser checks covered both themes at 390 and 1440 pixels, real public candles and mocked provider protocols.
+`npm test` builds TypeScript and the frontend before running unit tests. The 0.4.0 source revision passed 35 unit tests in a Linux VM, including recorded-real Lido normalization, strict unknown handling, neutral sorting/filtering, cache restart/concurrency/failure/staleness and both AI tool protocols. Staking renders use actual public Lido data in both themes at 390, 768, 1024 and 1440 pixels. Previous focused browser checks covered both themes at 390 and 1440 pixels, real public candles and mocked provider protocols.
 
 **Native Windows and macOS installation are not yet verified.** PowerShell-on-Linux testing is not Windows testing. The arm64 release is checked under QEMU on Linux, not on native ARM hardware. Real hosted AI credentials have not been validated; provider support describes implemented configurations, not a compatibility guarantee.
 

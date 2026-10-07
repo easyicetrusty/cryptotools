@@ -3,7 +3,9 @@ node_modules
 dist
 public
 mockups
-tests
+tests/*
+!tests/fixtures/
+!tests/fixtures/**
 evidence
 *.tar
 
@@ -32,3 +34,6 @@ evidence-fix1/
 fix1-real-data/
 fix1-synthetic-data/
 docs/screenshots/
+
+evidence-staking/
+staking-test-data/
