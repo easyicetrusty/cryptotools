@@ -14,3 +14,6 @@ test-scan-home/
 ollama-data/
 *.sqlite*
 *.secret
+evidence-fix1/
+fix1-real-data/
+fix1-synthetic-data/
