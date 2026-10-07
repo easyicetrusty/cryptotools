@@ -1,0 +1,31 @@
+{
+  "connector": "binance",
+  "url": "https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT",
+  "capturedAt": "2026-10-07T21:08:35.562Z",
+  "kind": "recorded-public-response",
+  "httpStatus": 200,
+  "subset": null,
+  "response": {
+    "symbol": "BTCUSDT",
+    "priceChange": "-2210.45000000",
+    "priceChangePercent": "-2.583",
+    "weightedAvgPrice": "83881.94223435",
+    "prevClosePrice": "85586.12000000",
+    "lastPrice": "83375.66000000",
+    "lastQty": "0.00008000",
+    "bidPrice": "83375.66000000",
+    "bidQty": "5.17433000",
+    "askPrice": "83375.67000000",
+    "askQty": "5.86636000",
+    "openPrice": "85586.11000000",
+    "highPrice": "85657.01000000",
+    "lowPrice": "82787.25000000",
+    "volume": "20587.37835000",
+    "quoteVolume": "1726909281.51142060",
+    "openTime": 1791320915004,
+    "closeTime": 1791407315004,
+    "firstId": 6740826259,
+    "lastId": 6745652176,
+    "count": 4825918
+  }
+}

@@ -1,0 +1,7 @@
+// Disposable MOCK transport only. Never used by normal startup. No real channel/key.
+import nodemailer from 'nodemailer';import {appendFileSync} from 'node:fs';import ccxt from 'ccxt';
+ccxt.bybit.prototype.fetch=async()=>{throw Error('MOCK source failure');};
+const original=globalThis.fetch;
+const record=(channel,message)=>appendFileSync('/data/mock-notifications.jsonl',JSON.stringify({capturedAt:new Date().toISOString(),transport:'MOCK ONLY',channel,message})+'\n');
+globalThis.fetch=async(url,options)=>{const u=String(url);if(u.startsWith('https://api.telegram.org/')){const b=JSON.parse(options.body);if(!u.includes('synthetic-notlive'))throw Error('Mock refuses non-fixture channel');record('telegram',b.text);return new Response(JSON.stringify({ok:true}),{status:200,headers:{'content-type':'application/json'}});}if(u.startsWith('https://api.bybit.com/'))return new Response(JSON.stringify({retCode:10000,retMsg:'MOCK source failure'}),{status:503,headers:{'content-type':'application/json'}});return original(url,options);};
+nodemailer.createTransport=options=>{if(options.host!=='smtp.mock.invalid'||!options.requireTLS&& !options.secure||options.tls.rejectUnauthorized!==true)throw Error('Mock refuses non-fixture SMTP or insecure TLS');return {async sendMail(message){if(message.disableFileAccess!==true||message.disableUrlAccess!==true)throw Error('Attachment access refused');record('email',message.text);return {accepted:[message.to]}},close(){}};};

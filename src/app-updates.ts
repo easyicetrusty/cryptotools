@@ -1,0 +1,1 @@
+export function newerRelease(candidate:string,current:string){const parse=(v:string)=>{const m=/^v?(\d+)\.(\d+)\.(\d+)(?:-beta\.(\d+))?$/.exec(v);return m?[Number(m[1]),Number(m[2]),Number(m[3]),m[4]===undefined?Infinity:Number(m[4])]:null;},a=parse(candidate),b=parse(current);if(!a||!b)return false;for(let i=0;i<4;i++){if(a[i]!==b[i])return a[i]>b[i];}return false;}

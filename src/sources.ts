@@ -1,4 +1,4 @@
-import ccxt from 'ccxt';
+import ccxt from 'ccxt';import {connectorQuirks} from './connector-quirks.js';
 import type {DatabaseSync} from 'node:sqlite';
 import {publicExchange} from './market.js';
 export const catalog=[
@@ -41,7 +41,7 @@ export function privateReader(id:string,c:Credentials,guard:()=>void=()=>{}){
  ex.fetch=async(url:string,method='GET',headers?:any,body?:any)=>{guard();const u=new URL(url),[host,paths]=rules[id];if(u.hostname!==host||!paths.includes(u.pathname)||method!==(id==='kraken-earn'?'POST':'GET'))throw Error('Read-only endpoint boundary');return original(url,method,headers,body);};return ex;
 }
 export class DataSources implements SourceAccess {
- constructor(private db:DatabaseSync,private crypt:Crypt,readonly sandbox=process.env.CRYPTOTOOLS_SANDBOX==='1',private fetcher:typeof fetch=fetch,private reader=privateReader,private marketReader=publicExchange){
+ constructor(private db:DatabaseSync,private crypt:Crypt,readonly sandbox=process.env.CRYPTOTOOLS_SANDBOX==='1',private fetcher:typeof fetch=fetch,private reader=privateReader,private marketReader=publicExchange,private onFailure:(id:string)=>void=()=>{}){
  const exists=db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='data_sources'").get();
  db.exec('CREATE TABLE IF NOT EXISTS data_sources(id TEXT PRIMARY KEY,enabled INTEGER NOT NULL DEFAULT 0,accepted_at TEXT,key_cipher TEXT,last_status TEXT,last_fetch TEXT); CREATE TABLE IF NOT EXISTS source_meta(k TEXT PRIMARY KEY,v TEXT)');
  if(!exists){const old=db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='settings'").get();const installed=old&&db.prepare("SELECT v FROM settings WHERE k='password'").get();db.prepare('INSERT OR REPLACE INTO source_meta VALUES(?,?)').run('migration_notice',installed?'1':'0');}
@@ -52,7 +52,7 @@ export class DataSources implements SourceAccess {
  row(id:string){this.definition(id);return this.db.prepare('SELECT * FROM data_sources WHERE id=?').get(id) as any;}
  enabled(id:string){const d=this.definition(id),r=this.row(id);return !!r.enabled&&!!r.accepted_at&&!(this.sandbox&&d.key);}
  require(id:string){if(!this.enabled(id))throw Error('Source disabled. Choose and accept it in Data sources.');}
- list(){return catalog.map(d=>{const r=this.row(d.id);return {...d,enabled:this.enabled(d.id),accepted:!!r.accepted_at,acceptedAt:r.accepted_at,configured:!!r.key_cipher,lastStatus:r.last_status,lastFetch:r.last_fetch,sandboxBlocked:this.sandbox&&d.key,permissionWarning:null};});}
+ list(){return catalog.map(d=>{const r=this.row(d.id);return {...d,quirks:connectorQuirks(d.id),enabled:this.enabled(d.id),accepted:!!r.accepted_at,acceptedAt:r.accepted_at,configured:!!r.key_cipher,lastStatus:r.last_status,lastFetch:r.last_fetch,sandboxBlocked:this.sandbox&&d.key,permissionWarning:null};});}
  notice(){return (this.db.prepare("SELECT v FROM source_meta WHERE k='migration_notice'").get() as any)?.v==='1';}
  containsSecret(text:string){for(const d of catalog){const r=this.row(d.id);if(r.key_cipher){const c=this.credentials(d.id);if(Object.values(c).some(v=>typeof v==='string'&&v.length>0&&text.includes(v)))return true;}}return false;}
  dismiss(){this.db.prepare("UPDATE source_meta SET v='0' WHERE k='migration_notice'").run();}
@@ -68,7 +68,7 @@ export class DataSources implements SourceAccess {
  if(b.enabled){if(d.key&&!cipher)throw Error('Key required');if((d as any).exchange&&d.key){try{await this.verify(id,true);}catch{this.status(id,'Connection or key permission check failed; source disabled.');throw Error('Read-only key check failed; source disabled');}}this.db.prepare('UPDATE data_sources SET enabled=1 WHERE id=?').run(id);}
  return {saved:true};
  }
- status(id:string,text:string,fetched=false){this.db.prepare('UPDATE data_sources SET last_status=?,last_fetch=CASE WHEN ? THEN ? ELSE last_fetch END WHERE id=?').run(text,fetched?1:0,new Date().toISOString(),id);}
+ status(id:string,text:string,fetched=false){if(/failed/i.test(text))this.onFailure(id);this.db.prepare('UPDATE data_sources SET last_status=?,last_fetch=CASE WHEN ? THEN ? ELSE last_fetch END WHERE id=?').run(text,fetched?1:0,new Date().toISOString(),id);}
  deleteKey(id:string){this.definition(id);this.db.prepare('UPDATE data_sources SET key_cipher=NULL,enabled=0,last_status=? WHERE id=?').run('Key deleted; source disabled',id);this.clearCache(id);}
  clearCache(id:string){for(const table of ['staking_cache','staking_attempts'])if(this.db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=?").get(table))this.db.prepare(`DELETE FROM ${table} WHERE source=?`).run(id);}
  async verify(id:string,enabling=false){const guard=()=>{if(enabling){if(!this.row(id).accepted_at||(this.sandbox&&this.definition(id).key))throw Error('Terms or sandbox refused');}else this.require(id);};guard();const ex=this.reader(id,this.credentials(id),guard);if(id==='binance-earn')return checkPermissions(id,await ex.sapiGetAccountApiRestrictions());if(id==='okx-earn')return checkPermissions(id,await ex.privateGetAccountConfig());return checkPermissions(id,await ex.privatePostGetApiKeyInfo());}

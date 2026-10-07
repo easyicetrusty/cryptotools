@@ -1,0 +1,34 @@
+{
+  "connector": "bybit",
+  "url": "https://api.bybit.com/v5/market/tickers?category=spot&symbol=BTCUSDT",
+  "capturedAt": "2026-10-07T21:08:35.225Z",
+  "kind": "recorded-public-response",
+  "httpStatus": 200,
+  "subset": null,
+  "response": {
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+      "category": "spot",
+      "list": [
+        {
+          "symbol": "BTCUSDT",
+          "bid1Price": "83368.7",
+          "bid1Size": "0.637314",
+          "ask1Price": "83368.8",
+          "ask1Size": "0.729378",
+          "lastPrice": "83368.8",
+          "prevPrice24h": "85582.9",
+          "price24hPcnt": "-0.0259",
+          "highPrice24h": "85659.2",
+          "lowPrice24h": "82758.8",
+          "turnover24h": "953117479.78364478",
+          "volume24h": "11368.203023",
+          "usdIndexPrice": "83326.522668"
+        }
+      ]
+    },
+    "retExtInfo": {},
+    "time": 1791407315131
+  }
+}

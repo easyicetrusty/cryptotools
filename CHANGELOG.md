@@ -1,5 +1,15 @@
 # What’s new
 
+## 0.7.2 · Everyday use
+- Persistent shared per-provider daily token budgets and rolling request limits cover chat, every worker and every tool round. Defaults 50,000 budgeted tokens / UTC day and 10 requests / minute; unlimited only by explicit choice. Visible meters and cap/reset messages. Conservative estimates are not billing guarantees.
+- OpenCode Zen preset limited to documented chat-completions/tool-capable models; protocol-incompatible models excluded. Official free-model privacy exceptions disclosed, no bundled key. Mock-only AI compatibility checks.
+- One-time free/stealth/custom-endpoint notice before use, bound to endpoint/model; per-provider portfolio-tool removal enforced server-side. Cross-provider worker output relay removed to prevent portfolio disclosure; typed goals/prompts remain the user's responsibility.
+- Daily forward paper-value observations, separated by quote currency, gap-preserving chart and CSV. Startup/UTC-midnight capture plus explicit views; never reconstruct past days from today's holdings. Source-revoked marks hidden.
+- Schema-versioned strategy-test JSON export/import validates settings, costs, range and seal configuration. Import fills the form only, never runs or unseals.
+- Opt-in own Telegram/SMTP channels, encrypted credentials, explicit six-event allowlist, fixed neutral messages, persistent rate limit/dedupe and test button. SMTP TLS required. No keys, balances, holdings or arbitrary job/error text in notifications.
+- Versioned connector capability/quirk JSON on every source card and recorded/public or labelled official-example parser fixtures per connector. Coinbase Exchange 4h history rejected; connector page limits used by the bench.
+- No new orders, optimiser, subscription, data rights or real credential validation. [Controls, methods and limitations](docs/EVERYDAY.md).
+
 ## 0.7.1-beta.2 · Keep sealed dates sealed across timeframes
 - Active seals and inspected-date history now span every timeframe for the same source and market. An hourly retest cannot bypass a daily seal or lose its seen label.
 - Added cross-timeframe state-machine and real API/browser regressions. Numerical metrics and fill economics are unchanged.

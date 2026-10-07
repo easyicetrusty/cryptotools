@@ -1,0 +1,85 @@
+{
+  "connector": "defillama",
+  "url": "https://yields.llama.fi/pools",
+  "capturedAt": "2026-10-07T21:08:36.279Z",
+  "kind": "recorded-public-response",
+  "httpStatus": 200,
+  "subset": "First two pools; no dataset bundled",
+  "response": {
+    "status": "success",
+    "data": [
+      {
+        "chain": "Ethereum",
+        "project": "lido",
+        "symbol": "STETH",
+        "tvlUsd": 24890678725,
+        "apyBase": 2.318,
+        "apyReward": null,
+        "apy": 2.318,
+        "rewardTokens": null,
+        "pool": "747c1d2a-c668-4682-b9f9-296708a3dd90",
+        "apyPct1D": -0.024,
+        "apyPct7D": 0.073,
+        "apyPct30D": 0.074,
+        "stablecoin": false,
+        "ilRisk": "no",
+        "exposure": "single",
+        "predictions": {
+          "predictedClass": "Stable/Up",
+          "predictedProbability": 71,
+          "binnedConfidence": 2
+        },
+        "poolMeta": null,
+        "mu": 3.41106,
+        "sigma": 0.05395,
+        "count": 1586,
+        "outlier": false,
+        "underlyingTokens": [
+          "0x0000000000000000000000000000000000000000"
+        ],
+        "il7d": null,
+        "apyBase7d": null,
+        "apyMean30d": 2.25052,
+        "volumeUsd1d": null,
+        "volumeUsd7d": null,
+        "apyBaseInception": null
+      },
+      {
+        "chain": "Ethereum",
+        "project": "binance-staked-eth",
+        "symbol": "WBETH",
+        "tvlUsd": 9039647588,
+        "apyBase": 2.26008,
+        "apyReward": null,
+        "apy": 2.26008,
+        "rewardTokens": null,
+        "pool": "80b8bf92-b953-4c20-98ea-c9653ef2bb98",
+        "apyPct1D": -0.01314,
+        "apyPct7D": -0.01424,
+        "apyPct30D": 0.05147,
+        "stablecoin": false,
+        "ilRisk": "no",
+        "exposure": "single",
+        "predictions": {
+          "predictedClass": "Stable/Up",
+          "predictedProbability": 68,
+          "binnedConfidence": 2
+        },
+        "poolMeta": null,
+        "mu": 2.91863,
+        "sigma": 0.03043,
+        "count": 1207,
+        "outlier": false,
+        "underlyingTokens": [
+          "0x0000000000000000000000000000000000000000"
+        ],
+        "il7d": null,
+        "apyBase7d": null,
+        "apyMean30d": 2.22827,
+        "volumeUsd1d": null,
+        "volumeUsd7d": null,
+        "apyBaseInception": null
+      }
+    ]
+  }
+}

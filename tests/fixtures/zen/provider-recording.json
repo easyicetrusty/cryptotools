@@ -1,0 +1,100 @@
+{
+  "capturedAt": "2026-10-07T22:56:59+02:00",
+  "sources": [
+    "https://opencode.ai/docs/zen/",
+    "https://models.dev/api.json",
+    "https://github.com/anomalyco/opencode/blob/dev/packages/opencode/src/provider/provider.ts"
+  ],
+  "kind": "public documented metadata; not an authenticated model invocation",
+  "api": "https://opencode.ai/zen/v1",
+  "npm": "@ai-sdk/openai-compatible",
+  "models": {
+    "qwen3.8-max": {
+      "tool_call": true
+    },
+    "deepseek-v4.1-flash": {
+      "tool_call": true
+    },
+    "deepseek-v4-pro": {
+      "tool_call": true
+    },
+    "deepseek-v4-flash": {
+      "tool_call": true
+    },
+    "deepseek-v4-flash-vision-exp": {
+      "tool_call": true
+    },
+    "minimax-m3": {
+      "tool_call": true
+    },
+    "minimax-m2.7": {
+      "tool_call": true
+    },
+    "minimax-m2.5": {
+      "tool_call": true
+    },
+    "glm-5.3-flash": {
+      "tool_call": true
+    },
+    "glm-5.3": {
+      "tool_call": true
+    },
+    "glm-5.2": {
+      "tool_call": true
+    },
+    "glm-5.1": {
+      "tool_call": true
+    },
+    "glm-5": {
+      "tool_call": true
+    },
+    "kimi-k2.5": {
+      "tool_call": true
+    },
+    "kimi-k2.6": {
+      "tool_call": true
+    },
+    "kimi-k2.7-code": {
+      "tool_call": true
+    },
+    "kimi-k3": {
+      "tool_call": true
+    },
+    "mistral-large-4": {
+      "tool_call": true
+    },
+    "big-pickle": {
+      "tool_call": true
+    },
+    "space-bunny-free": {
+      "tool_call": true
+    },
+    "longcat-2.5-preview-free": {
+      "tool_call": true
+    },
+    "exo-free": {
+      "tool_call": true
+    },
+    "fledge-alpha-free": {
+      "tool_call": true
+    },
+    "mimo-v2.6-flash-free": {
+      "tool_call": true
+    },
+    "mimo-v2.5-free": {
+      "tool_call": true
+    },
+    "ling-3.1-flash-free": {
+      "tool_call": true
+    },
+    "ling-3.0-flash-fin-free": {
+      "tool_call": true
+    },
+    "nemotron-3-ultra-free": {
+      "tool_call": true
+    },
+    "nemotron-3.5-lightning-free": {
+      "tool_call": true
+    }
+  }
+}

@@ -11,8 +11,11 @@ Licence: GNU Affero General Public License v3.0 (AGPL-3.0). See [LICENSE](LICENS
 - User-enabled public spot connectors through ccxt for Kraken, OKX, Bybit, Binance and Coinbase Exchange, subject to access and history limits. Every source starts off.
 - Historical hold, SMA crossover, daily weekly-trend and RSI tests with dated exchange rules, taker fee provenance/overrides, precision rounding, minimum-size skips and flat or causal volatility/volume slippage. Timestamp-aligned BTC uses its own rules/fees and the same quote currency/capital. Each result has a modelled/omitted panel and immutable manifest; Re-run exactly checks its frozen local inputs. [Timing, formulas and limitations](docs/HONEST-BENCH.md).
 - Strategy and BTC daily marked-equity metrics, 365-day annualisation, explicit risk-free input, PSR assumptions, underwater/monthly/rolling charts and self-contained light HTML reports for saved frozen runs. User-selected 2–4-run comparison warns about manifest differences. Tuning/sealed experiments require explicit one-time unseal and mark inspected windows/parameter revisions seen. No optimizer or forecasts. [Formulas, oracle conventions, reports and seal limitations](docs/RESULTS.md).
-- Manual paper holdings valued with an enabled spot connector, plus CSV export. These are not exchange account balances. Different quote currencies are not summed.
-- A BYOK assistant and four read-only background workers: research, backtest, risk and reviewer. Supported provider configurations: OpenAI, Anthropic, Mistral, Gemini's compatible endpoint, DeepSeek, OpenRouter and local Ollama. You choose the provider and model; provider charges may apply.
+- Schema-versioned strategy-test JSON presets import/export configuration without running or unsealing.
+- Manual paper holdings valued with an enabled spot connector, daily forward value observations, gap-preserving chart and CSV export. These are not exchange account balances. Different quote currencies are not summed.
+- A BYOK assistant and four read-only background workers: research, backtest, risk and reviewer. Supported provider configurations: OpenAI, Anthropic, Mistral, Gemini's compatible endpoint, DeepSeek, OpenRouter, local Ollama and a protocol-limited OpenCode Zen preset. Shared daily token/rate controls, visible meters and free/custom-endpoint privacy acknowledgement; per-provider portfolio-tool disable. You choose the provider and model; provider charges may apply. [Defaults and limits](docs/EVERYDAY.md).
+- Opt-in own Telegram or TLS SMTP status notifications, six explicitly selected events, fixed neutral templates and encrypted/deletable credentials. Off by default; no channel supplied by the app.
+- Versioned connector capabilities/quirks shown on Data sources; adapter declarations and access limitations are explicit.
 - Neutral staking data from your enabled DefiLlama free/Pro, Lido and Bybit public earn connectors, plus read-only Kraken/Binance/OKX earn adapters tested against official examples, not real keys. Filters, sorting and timestamped SQLite caching preserve unknowns. Not a complete market survey. See [data-source notes](docs/DATA-SOURCES.md).
 - Trends from enabled public spot sources: volume leaders and exchange breakdowns, capped/lazy thirty-day volume ratios, recent initiating-side flow, market-list changes and supported public perpetual positioning. Definitions, timestamps, unknowns and volume-distortion notices; [metric methods and limits](docs/TRENDS.md). Test-bench links preselect the actual market for past-behaviour testing only.
 - Surge universe 25/50/100 (default 50 per exchange), bounded lazy scanning with visible progress/coverage and reused closed daily candles. Saved neutral stablecoin-pair exclusion defaults on, stablecoin-base exclusion defaults off; both reversible, with a conservative source-linked code list.
@@ -79,7 +82,7 @@ Download and review [compose.yaml](compose.yaml), then run from its directory:
 docker compose pull && docker compose up -d --wait --wait-timeout 180
 ```
 
-To pin a release instead of `latest`, set `CRYPTOTOOLS_IMAGE=ghcr.io/easyicetrusty/cryptotools:0.7.1-beta.2` (PowerShell: `$env:CRYPTOTOOLS_IMAGE = 'ghcr.io/easyicetrusty/cryptotools:0.7.1-beta.2'`). `APP_PORT` overrides port 8080 and `CRYPTOTOOLS_DIR` overrides the install directory. Repeat any overrides when updating or stopping. The Compose project name and volume names stay `cryptotools`; changing the install directory does not create a separate instance.
+To pin a release instead of `latest`, set `CRYPTOTOOLS_IMAGE=ghcr.io/easyicetrusty/cryptotools:0.7.2` (PowerShell: `$env:CRYPTOTOOLS_IMAGE = 'ghcr.io/easyicetrusty/cryptotools:0.7.2'`). `APP_PORT` overrides port 8080 and `CRYPTOTOOLS_DIR` overrides the install directory. Repeat any overrides when updating or stopping. The Compose project name and volume names stay `cryptotools`; changing the install directory does not create a separate instance.
 
 ## Where data goes
 
@@ -89,10 +92,11 @@ There are important exceptions:
 
 - Only enabled sources are contacted over the Internet from your installation. Staking snapshots have a 15-minute persisted refresh/failure cooldown; user-initiated connection tests may fetch outside it. Retrieval and provider observation times are separate; unavailable observations stay unknown. DefiLlama Pro's key is part of its official request URL but is not returned or logged by the app.
 - If you enable a hosted AI provider, prompts and requested tool data, including paper holdings, go to that provider. Its terms and retention rules apply. Local Ollama avoids a hosted AI provider but requires a reachable model service and explicit endpoint configuration. Inside Docker, `127.0.0.1` refers to the container, not your host.
+- Enabled notifications send only fixed neutral statuses to your own Telegram bot/chat or TLS SMTP server. The destination receives status events and delivery metadata, never dynamic job content. Explicit update checks contact the public GitHub release API; there is no auto-update.
 - Feedback sends version, screen and what you type to the configured feedback service. The default is local. An overridden `FEEDBACK_URL` can be remote. Never paste private material; the free-text filter is incomplete.
 - Optional usage counters send only allowlisted names and counts to the configured feedback service. Opting out stops new counts, not deletion of existing counts.
 
-AI and data-provider keys and TOTP secrets are encrypted at rest. The default randomly generated master key is stored alongside the database in the app volume. Someone who can read both can decrypt them. Back up both together; losing the master key loses access to saved keys. This is not hardware isolation. Authentication recovery and TOTP disable/reset UI are not implemented; retain your authenticator before enabling 2FA. See [SECURITY.md](SECURITY.md).
+AI, data-provider and notification credentials and TOTP secrets are encrypted at rest. The default randomly generated master key is stored alongside the database in the app volume. Someone who can read both can decrypt them. Back up both together; losing the master key loses access to saved keys. This is not hardware isolation. Authentication recovery and TOTP disable/reset UI are not implemented; retain your authenticator before enabling 2FA. See [SECURITY.md](SECURITY.md).
 
 ## Screenshots
 
@@ -148,7 +152,7 @@ The 0.7.0 bench records the current market metadata applied historically, preser
 
 ### Results you can inspect
 
-Current revision **0.7.1-beta.2** corrects a cross-timeframe seal/history gap found after tagging 0.7.1: every timeframe for the same source/market shares the date guard and inspected-state history. Original v0.7.1 is retained and superseded; metric/fill definitions are unchanged.
+The earlier **0.7.1-beta.2** revision corrects a cross-timeframe seal/history gap found after tagging 0.7.1: every timeframe for the same source/market shares the date guard and inspected-state history. Original v0.7.1 is retained and superseded; metric/fill definitions are unchanged.
 
 Version 0.7.1 adds daily-equity analytics, independent same-quote BTC metrics, saved-run comparison and a sealed-window workflow. It is information about simulations, not advice, rankings or a forecast. Reports are escaped inline HTML/SVG with the run manifest, modelled/omitted panel, source provenance, daily returns and both ledgers. The default report is light and print-friendly; downloaded files are outside later source revocation. The sealing workflow is local, not cryptographic secrecy: owners can inspect their database/public history, and deleting a volume loses inspection history.
 
@@ -159,6 +163,10 @@ QuantStats 0.0.77 is a cowork-only numerical oracle, never a shipped Python runt
 ![Daily marked-equity metrics and charts, light mobile](docs/screenshots/v071-clear-metrics-390.png)
 
 [0.7.1 capture inputs and disclosure](docs/screenshots/V071.md).
+
+### Everyday use
+
+Version 0.7.2 adds cost/privacy controls, forward paper-value history, JSON presets, opt-in own-channel notifications and source diagnostics. Missing history stays missing; caps are conservative guards rather than a provider-bill guarantee. Zen's free models can have collection/training exceptions: read its current terms before use. Real AI/Telegram/SMTP keys are not used in our checks. [Methods and verification boundaries](docs/EVERYDAY.md). [Captured checks and both-theme panels](docs/EVERYDAY-CHECKS.md).
 
 ## Development and test status
 

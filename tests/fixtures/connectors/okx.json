@@ -1,0 +1,32 @@
+{
+  "connector": "okx",
+  "url": "https://www.okx.com/api/v5/market/ticker?instId=BTC-USDT",
+  "capturedAt": "2026-10-07T21:08:34.903Z",
+  "kind": "recorded-public-response",
+  "httpStatus": 200,
+  "subset": null,
+  "response": {
+    "code": "0",
+    "data": [
+      {
+        "instType": "SPOT",
+        "instId": "BTC-USDT",
+        "last": "83378.2",
+        "lastSz": "0.00868374",
+        "askPx": "83378.3",
+        "askSz": "0.62172413",
+        "bidPx": "83378.2",
+        "bidSz": "0.285499",
+        "open24h": "85585.2",
+        "high24h": "85668.9",
+        "low24h": "82753",
+        "volCcy24h": "530044920.248207908",
+        "vol24h": "6319.91230039",
+        "ts": "1791407314073",
+        "sodUtc0": "85553.9",
+        "sodUtc8": "83458.1"
+      }
+    ],
+    "msg": ""
+  }
+}

@@ -1,0 +1,277 @@
+{
+  "schemaVersion": 1,
+  "ccxtPackage": "4.5.85",
+  "ccxtReportedVersion": "4.5.84",
+  "connectors": {
+    "kraken": {
+      "timeframes": [
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "4h",
+        "1d",
+        "1w",
+        "2w"
+      ],
+      "benchTimeframes": [
+        "1h",
+        "4h",
+        "1d"
+      ],
+      "historyLimit": 720,
+      "pageLimit": 500,
+      "rateLimitMs": 1000,
+      "feePage": "https://www.kraken.com/features/fee-schedule",
+      "ccxtMethods": {
+        "fetchTicker": true,
+        "fetchTickers": true,
+        "fetchOHLCV": true,
+        "fetchTrades": true,
+        "fetchFundingRate": false,
+        "fetchOpenInterest": null
+      },
+      "quirks": "OHLC endpoint retains up to 720 recent bars; excludes current open candle. Spot only; derivative metrics unavailable.",
+      "status": "ccxt-declared capabilities; limits also constrained by app; not a live access guarantee",
+      "capturedAt": "2026-10-07T23:01:11+02:00"
+    },
+    "okx": {
+      "timeframes": [
+        "1m",
+        "3m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "4h",
+        "6h",
+        "12h",
+        "1d",
+        "1w",
+        "1M",
+        "3M"
+      ],
+      "benchTimeframes": [
+        "1h",
+        "4h",
+        "1d"
+      ],
+      "historyLimit": null,
+      "pageLimit": 300,
+      "rateLimitMs": 110.00000000000001,
+      "feePage": "https://www.okx.com/fees",
+      "ccxtMethods": {
+        "fetchTicker": true,
+        "fetchTickers": true,
+        "fetchOHLCV": true,
+        "fetchTrades": true,
+        "fetchFundingRate": true,
+        "fetchOpenInterest": true
+      },
+      "quirks": "UTC closed candles; candle endpoint pages at most 300 in this app. Regional access and reuse permission remain user responsibilities.",
+      "status": "ccxt-declared capabilities; limits also constrained by app; not a live access guarantee",
+      "capturedAt": "2026-10-07T23:01:11+02:00"
+    },
+    "bybit": {
+      "timeframes": [
+        "1m",
+        "3m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "4h",
+        "6h",
+        "12h",
+        "1d",
+        "1w",
+        "1M"
+      ],
+      "benchTimeframes": [
+        "1h",
+        "4h",
+        "1d"
+      ],
+      "historyLimit": null,
+      "pageLimit": 500,
+      "rateLimitMs": 20,
+      "feePage": "https://www.bybit.com/en/help-center/article/Trading-Fee-Structure",
+      "ccxtMethods": {
+        "fetchTicker": true,
+        "fetchTickers": true,
+        "fetchOHLCV": true,
+        "fetchTrades": true,
+        "fetchFundingRate": "emulated",
+        "fetchOpenInterest": true
+      },
+      "quirks": "Spot and linear perpetual data are separate. Pagination does not establish complete historical coverage.",
+      "status": "ccxt-declared capabilities; limits also constrained by app; not a live access guarantee",
+      "capturedAt": "2026-10-07T23:01:11+02:00"
+    },
+    "binance": {
+      "timeframes": [
+        "1s",
+        "1m",
+        "3m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "4h",
+        "6h",
+        "8h",
+        "12h",
+        "1d",
+        "3d",
+        "1w",
+        "1M"
+      ],
+      "benchTimeframes": [
+        "1h",
+        "4h",
+        "1d"
+      ],
+      "historyLimit": null,
+      "pageLimit": 500,
+      "rateLimitMs": 50,
+      "feePage": "https://www.binance.com/en/fee/trading",
+      "ccxtMethods": {
+        "fetchTicker": true,
+        "fetchTickers": true,
+        "fetchOHLCV": true,
+        "fetchTrades": true,
+        "fetchFundingRate": true,
+        "fetchOpenInterest": true
+      },
+      "quirks": "Endpoint request weights vary; ccxt rateLimit is a base delay, not a provider quota guarantee. Regional restrictions may block access.",
+      "status": "ccxt-declared capabilities; limits also constrained by app; not a live access guarantee",
+      "capturedAt": "2026-10-07T23:01:11+02:00"
+    },
+    "coinbase": {
+      "timeframes": [
+        "1m",
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "1d"
+      ],
+      "benchTimeframes": [
+        "1h",
+        "1d"
+      ],
+      "historyLimit": null,
+      "pageLimit": 300,
+      "rateLimitMs": 100,
+      "feePage": "https://help.coinbase.com/en/exchange/trading-and-funding/exchange-fees",
+      "ccxtMethods": {
+        "fetchTicker": true,
+        "fetchTickers": true,
+        "fetchOHLCV": true,
+        "fetchTrades": true,
+        "fetchFundingRate": false,
+        "fetchOpenInterest": false
+      },
+      "quirks": "Coinbase Exchange adapter, not Coinbase brokerage. No 4h candles. Batch quote turnover remains unknown in this app; recent public trades supported.",
+      "status": "ccxt-declared capabilities; limits also constrained by app; not a live access guarantee",
+      "capturedAt": "2026-10-07T23:01:11+02:00"
+    },
+    "defillama": {
+      "timeframes": [],
+      "benchTimeframes": [],
+      "historyLimit": null,
+      "pageLimit": null,
+      "rateLimitMs": null,
+      "feePage": null,
+      "ccxtMethods": {},
+      "quirks": "Current pools only; no inferred categories. Provider terms restrict commercial reuse.",
+      "status": "recorded public response or official example; private/paid live access unverified",
+      "capturedAt": "2026-10-07T23:01:11+02:00"
+    },
+    "defillama-pro": {
+      "timeframes": [],
+      "benchTimeframes": [],
+      "historyLimit": null,
+      "pageLimit": null,
+      "rateLimitMs": null,
+      "feePage": null,
+      "ccxtMethods": {},
+      "quirks": "Own paid API key; live paid response untested. Provider terms still apply.",
+      "status": "recorded public response or official example; private/paid live access unverified",
+      "capturedAt": "2026-10-07T23:01:11+02:00"
+    },
+    "lido": {
+      "timeframes": [],
+      "benchTimeframes": [],
+      "historyLimit": null,
+      "pageLimit": null,
+      "rateLimitMs": null,
+      "feePage": null,
+      "ccxtMethods": {},
+      "quirks": "7-day SMA APR, not APY; no history supplied by this endpoint.",
+      "status": "recorded public response or official example; private/paid live access unverified",
+      "capturedAt": "2026-10-07T23:01:11+02:00"
+    },
+    "bybit-earn": {
+      "timeframes": [],
+      "benchTimeframes": [],
+      "historyLimit": null,
+      "pageLimit": null,
+      "rateLimitMs": null,
+      "feePage": null,
+      "ccxtMethods": {},
+      "quirks": "Public fixed-term listings; many fields unknown. Reuse permission unresolved.",
+      "status": "recorded public response or official example; private/paid live access unverified",
+      "capturedAt": "2026-10-07T23:01:11+02:00"
+    },
+    "kraken-earn": {
+      "timeframes": [],
+      "benchTimeframes": [],
+      "historyLimit": null,
+      "pageLimit": null,
+      "rateLimitMs": null,
+      "feePage": null,
+      "ccxtMethods": {
+        "privatePostEarnStrategies": true,
+        "privatePostGetApiKeyInfo": true
+      },
+      "quirks": "Read-only key and permission check required; official response examples only.",
+      "status": "recorded public response or official example; private/paid live access unverified",
+      "capturedAt": "2026-10-07T23:01:11+02:00"
+    },
+    "binance-earn": {
+      "timeframes": [],
+      "benchTimeframes": [],
+      "historyLimit": null,
+      "pageLimit": 100,
+      "rateLimitMs": null,
+      "feePage": null,
+      "ccxtMethods": {
+        "sapiGetSimpleEarnFlexibleList": true,
+        "sapiGetAccountApiRestrictions": true
+      },
+      "quirks": "Read-only key and permission check required. Single page: at most 100 flexible products; incomplete universe.",
+      "status": "recorded public response or official example; private/paid live access unverified",
+      "capturedAt": "2026-10-07T23:01:11+02:00"
+    },
+    "okx-earn": {
+      "timeframes": [],
+      "benchTimeframes": [],
+      "historyLimit": null,
+      "pageLimit": null,
+      "rateLimitMs": null,
+      "feePage": null,
+      "ccxtMethods": {
+        "privateGetFinanceStakingDefiOffers": true,
+        "privateGetAccountConfig": true
+      },
+      "quirks": "Read-only key and permission check required. APR cannot be relabelled APY; reuse restrictions apply.",
+      "status": "recorded public response or official example; private/paid live access unverified",
+      "capturedAt": "2026-10-07T23:01:11+02:00"
+    }
+  }
+}

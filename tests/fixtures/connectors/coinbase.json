@@ -1,0 +1,18 @@
+{
+  "connector": "coinbase",
+  "url": "https://api.exchange.coinbase.com/products/BTC-USD/ticker",
+  "capturedAt": "2026-10-07T21:08:35.666Z",
+  "kind": "recorded-public-response",
+  "httpStatus": 200,
+  "subset": null,
+  "response": {
+    "ask": "83320.89",
+    "bid": "83320.88",
+    "volume": "7675.50301159",
+    "trade_id": 1103543167,
+    "price": "83320.89",
+    "size": "0.0046125",
+    "time": "2026-10-07T21:08:32.365534912Z",
+    "rfq_volume": "87.613619"
+  }
+}
