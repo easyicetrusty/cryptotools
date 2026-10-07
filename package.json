@@ -1,6 +1,6 @@
 {
   "name": "cryptotools",
-  "version": "0.7.0-beta.2",
+  "version": "0.7.1",
   "private": true,
   "type": "module",
   "engines": {

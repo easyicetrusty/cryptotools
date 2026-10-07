@@ -1,6 +1,6 @@
 import {DatabaseSync} from 'node:sqlite';
 import {mkdirSync} from 'node:fs';import {dirname} from 'node:path';import Fastify from 'fastify';
-export const version='0.7.0-beta.2';export const host=process.env.HOST??'0.0.0.0';export const port=Number(process.env.PORT??8080);
+export const version='0.7.1';export const host=process.env.HOST??'0.0.0.0';export const port=Number(process.env.PORT??8080);
 export function database(path:string){mkdirSync(dirname(path),{recursive:true});const db=new DatabaseSync(path);db.exec('PRAGMA journal_mode=WAL; PRAGMA busy_timeout=5000');return db;}
 export function service(){return Fastify({logger:false,bodyLimit:16384,ajv:{customOptions:{removeAdditional:false}}});}
 export const screens=['trends','sources','staking','bench','portfolio','assistant','workers','settings','news','onboarding','login'];

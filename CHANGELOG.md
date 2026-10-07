@@ -1,5 +1,13 @@
 # What’s new
 
+## 0.7.1 · Results you can inspect
+- Strategy and BTC daily marked-equity metrics: returns/CAGR, annualised volatility, Sharpe/Sortino/Calmar, drawdown episodes/duration, historical VaR/CVaR, observed periods, held-time exposure, skew/kurtosis and PSR against SR 0. Crypto annualisation 365; RF 0 by default/editable; undefined values and PSR assumptions explicit.
+- Equity/underwater plots, monthly returns heatmaps and trailing 30/90-day Sharpe/volatility. Independent TypeScript formulas with pinned cowork-only QuantStats oracle; committed real Kraken/OKX and synthetic fixtures keep Python out of CI and the image.
+- Escaped self-contained, light print-friendly HTML report for saved frozen runs: disclaimer, source provenance, full manifest, modelled/omitted panel, metrics, charts, daily returns and both ledgers. No external URLs/requests. Downloads remain outside later source revocation.
+- User-selected 2–4 saved runs, neutral side-by-side metrics and normalized equity. Manifest source/range/fee/rule and other mismatches warn rather than hide differences.
+- Tuning/sealed chronological experiments evaluate tuning only until explicit confirmed one-time unseal. Independent capital; immutable protocol annotation and persistent inspection state. Later parameter changes/overlapping inspected windows marked seen. Local workflow, not cryptographic concealment; no optimizer.
+- Read-only saved-run metrics AI tool; ordinary AI/backtests cannot cross active sealed windows. History, reports, comparisons and experiments preserve enabled-source gates. Existing frozen/legacy economics retained. [All formulas and limitations](docs/RESULTS.md).
+
 ## 0.7.0-beta.2 · Correct legacy constraints disclosure
 - Legacy saved results explicitly state that constraints are unavailable, rather than falling through to a current-snapshot availability message. Two regression fixtures and the real upgrade/browser check cover this disclosure.
 - New prerelease revision; the published v0.7.0 tag is preserved. The execution model and costs are unchanged. Saved v0.7.0 bundles replay with an app-version difference rather than a false identical claim after upgrade.

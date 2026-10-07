@@ -11,7 +11,7 @@ New-Item -ItemType Directory -Force -Path $directory | Out-Null
 $config = Join-Path $directory 'compose.yaml'
 $temp = Join-Path $directory ('compose.' + [guid]::NewGuid().ToString() + '.tmp')
 try {
-    Invoke-WebRequest 'https://raw.githubusercontent.com/easyicetrusty/cryptotools/v0.7.0-beta.2/compose.yaml' -OutFile $temp
+    Invoke-WebRequest 'https://raw.githubusercontent.com/easyicetrusty/cryptotools/v0.7.1/compose.yaml' -OutFile $temp
     Move-Item -Force $temp $config
 } finally {
     if (Test-Path $temp) { Remove-Item $temp }
