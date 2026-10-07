@@ -51,7 +51,7 @@ Do not use `docker compose down -v` unless you deliberately want to delete the d
 
 ## Where data goes
 
-Your database, cached candles, paper holdings, chat/job records and saved settings stay in Docker volumes on your machine by default. The feedback service has its own local volume in this Compose configuration.
+Your database, cached candles, paper holdings, backtest/job records and saved settings stay in Docker volumes on your machine by default. Individual assistant replies are kept in the browser page state, not saved as chat history. The feedback service has its own local volume in this Compose configuration.
 
 There are important exceptions:
 
