@@ -1,6 +1,6 @@
-# Everyday use · 0.7.2-beta.2
+# Everyday use · 0.7.3-beta.1
 
-This revision also rechecks portfolio access after awaited tools and before later model requests. If access changes, pending or previous portfolio results are withheld and the operation aborts with a clear message. Data already sent cannot be recalled. The original v0.7.2 tag/image is retained and superseded.
+This revision also rechecks portfolio access after awaited tools and before later model requests. If access changes, pending or previous portfolio results are withheld and the operation aborts with a clear message. Data already sent cannot be recalled. Earlier v0.7.2/v0.7.2-beta.2 tags/images are retained and superseded. The higher patch version lets original v0.7.2 installations detect the update.
 
 Information only. Paper research, no orders or optimiser. Data sources remain off until the user accepts their terms and enables them. Acceptance is not a data licence.
 

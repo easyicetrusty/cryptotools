@@ -82,7 +82,7 @@ Download and review [compose.yaml](compose.yaml), then run from its directory:
 docker compose pull && docker compose up -d --wait --wait-timeout 180
 ```
 
-To pin a release instead of `latest`, set `CRYPTOTOOLS_IMAGE=ghcr.io/easyicetrusty/cryptotools:0.7.2-beta.2` (PowerShell: `$env:CRYPTOTOOLS_IMAGE = 'ghcr.io/easyicetrusty/cryptotools:0.7.2-beta.2'`). `APP_PORT` overrides port 8080 and `CRYPTOTOOLS_DIR` overrides the install directory. Repeat any overrides when updating or stopping. The Compose project name and volume names stay `cryptotools`; changing the install directory does not create a separate instance.
+To pin a release instead of `latest`, set `CRYPTOTOOLS_IMAGE=ghcr.io/easyicetrusty/cryptotools:0.7.3-beta.1` (PowerShell: `$env:CRYPTOTOOLS_IMAGE = 'ghcr.io/easyicetrusty/cryptotools:0.7.3-beta.1'`). `APP_PORT` overrides port 8080 and `CRYPTOTOOLS_DIR` overrides the install directory. Repeat any overrides when updating or stopping. The Compose project name and volume names stay `cryptotools`; changing the install directory does not create a separate instance.
 
 ## Where data goes
 
@@ -166,7 +166,7 @@ QuantStats 0.0.77 is a cowork-only numerical oracle, never a shipped Python runt
 
 ### Everyday use
 
-Current revision **0.7.2-beta.2** closes a pending-tool privacy race: disabling portfolio access aborts pending/previous portfolio-result relay before another model request. Data already sent cannot be recalled. Original v0.7.2 is retained and superseded.
+Current revision **0.7.3-beta.1** closes a pending-tool privacy race: disabling portfolio access aborts pending/previous portfolio-result relay before another model request. Data already sent cannot be recalled. Earlier v0.7.2/v0.7.2-beta.2 tags are retained and superseded. The higher patch number lets original v0.7.2 installations detect this update.
 
 Version 0.7.2 adds cost/privacy controls, forward paper-value history, JSON presets, opt-in own-channel notifications and source diagnostics. Missing history stays missing; caps are conservative guards rather than a provider-bill guarantee. Zen's free models can have collection/training exceptions: read its current terms before use. Real AI/Telegram/SMTP keys are not used in our checks. [Methods and verification boundaries](docs/EVERYDAY.md). [Captured checks and both-theme panels](docs/EVERYDAY-CHECKS.md).
 

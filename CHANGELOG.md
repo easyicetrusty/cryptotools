@@ -1,5 +1,9 @@
 # What’s new
 
+## 0.7.3-beta.1 · Detectable privacy update
+- Same pending-portfolio privacy correction as v0.7.2-beta.2, with a higher patch number so original v0.7.2 installations detect the update under the existing version comparator. Added a package-version assertion preventing a corrective release from sorting below v0.7.2.
+- Both earlier tags/images retained, not rewritten.
+
 ## 0.7.2-beta.2 · Withhold pending portfolio results after access changes
 - Recheck portfolio permission after awaited tool work and before every later model HTTP request. Both native and compatible protocols abort instead of relaying pending or earlier portfolio results after the toggle is disabled. Later tool schemas omit the portfolio tool.
 - Clear access-changed error; four asynchronous permission-change regressions. Original v0.7.2 tag/image retained and superseded, never rewritten.
