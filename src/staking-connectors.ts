@@ -1,12 +1,13 @@
 import {normalizeLido,type Option} from './staking.js';
 const numeric=(v:any)=>(typeof v==='number'||(typeof v==='string'&&v.trim()!==''))&&Number.isFinite(Number(v))?Number(v):null;
 const base=(id:string,asset:string,venue:string,sourceUrl:string,docsUrl:string,time:string):Option=>({dataAccess:['kraken-earn','binance-earn','okx-earn','defillama-pro'].some(prefix=>id.startsWith(prefix+':'))?'authenticated':'keyless',id,asset,venue,chain:'unknown',type:'exchange earn',apy:null,apr:null,rateType:'variable; other conditions unknown',baseApy:null,rewardApy:null,lockDays:null,lockUp:null,custody:'exchange holds coins',risks:[],riskSource:docsUrl,minimum:null,tvlUsd:null,source:venue+' API',sourceUrl,docsUrl,fetchedAt:time,sourceTimestamp:null,availability:'unknown',promo:null});
+export function sourcePoolType(category:unknown){const known:Record<string,string>={'staking':'on-chain staking','liquid staking':'liquid staking','lending':'lending pool'};return typeof category==='string'?(known[category.toLowerCase().trim()]??'yield pool (classification unknown)'):'yield pool (classification unknown)';}
 export const earnSources=['defillama','defillama-pro','lido','bybit-earn','kraken-earn','binance-earn','okx-earn'];
 export function normalizeConnector(id:string,raw:any,time:string):Option[]{
  if(id==='lido')return normalizeLido(raw,time);
  if(id==='defillama'||id==='defillama-pro'){
  if(raw?.status!=='success'||!Array.isArray(raw.data))throw Error('Invalid yield pools');
- return raw.data.filter((p:any)=>typeof p.pool==='string'&&typeof p.symbol==='string'&&typeof p.project==='string').map((p:any)=>({...base(id+':'+p.pool,p.symbol,p.project,'https://yields.llama.fi/pools','https://api-docs.defillama.com/',time),chain:typeof p.chain==='string'?p.chain:'unknown',type:'yield pool (classification unknown)',custody:'unknown',apy:numeric(p.apy),baseApy:numeric(p.apyBase),rewardApy:numeric(p.apyReward),tvlUsd:numeric(p.tvlUsd),source:id==='defillama-pro'?'DefiLlama Pro API':'DefiLlama free API',rateType:'variable APY; methodology in source docs'}));
+ return raw.data.filter((p:any)=>typeof p.pool==='string'&&typeof p.symbol==='string'&&typeof p.project==='string').map((p:any)=>({...base(id+':'+p.pool,p.symbol,p.project,'https://yields.llama.fi/pools','https://api-docs.defillama.com/',time),chain:typeof p.chain==='string'?p.chain:'unknown',type:sourcePoolType(p.category),custody:'unknown',promo:typeof p.promo==='boolean'?p.promo:null,apy:numeric(p.apy),baseApy:numeric(p.apyBase),rewardApy:numeric(p.apyReward),tvlUsd:numeric(p.tvlUsd),source:id==='defillama-pro'?'DefiLlama Pro API':'DefiLlama free API',rateType:'variable APY; methodology in source docs'}));
  }
  if(id==='bybit-earn'){
  if(raw?.retCode!==0||!Array.isArray(raw?.result?.list))throw Error('Invalid Bybit products');

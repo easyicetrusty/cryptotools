@@ -9,6 +9,7 @@ export function combineProvenance(items:Partial<Provenance>[]):Provenance {
   return {source:items.some(p=>p.source==='authenticated')?'authenticated':'public',exchange:[...new Set(items.map(p=>p.exchange!))].join(' + '),fetchedAt:items.map(p=>p.fetchedAt!).sort()[0]};
 }
 export function toolProvenance(result:any):Provenance[] {
+  if(result?.metric&&Array.isArray(result?.sources))return result.sources.filter((s:any)=>s.fetchedAt).map((s:any)=>({source:'public',exchange:s.exchange,fetchedAt:s.fetchedAt}));
   if(Array.isArray(result?.options))return result.options.map((o:any)=>({source:o.dataAccess==='authenticated'?'authenticated':'public',exchange:o.source,fetchedAt:o.fetchedAt}));
   if(result?.coverage)return [result.coverage];
   if(result?.source)return [result];

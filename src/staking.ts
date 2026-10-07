@@ -8,15 +8,17 @@ export const stakingNotice='Information only, not financial advice. Rates change
 export type Option={dataAccess?:'keyless'|'authenticated',id:string,asset:string,venue:string,chain:string,type:string,apy:number|null,apr:number|null,rateType:string,baseApy:number|null,rewardApy:number|null,lockDays:number|null,lockUp:string|null,custody:string,risks:string[],riskSource:string,minimum:number|null,tvlUsd:number|null,source:string,sourceUrl:string,docsUrl:string,fetchedAt:string,sourceTimestamp:string|null,availability:string,promo:boolean|null};
 export const sortKeys=['asset','venue','type','apy','apr','rateType','lockDays','custody','risks','minimum','tvlUsd','source','fetchedAt','sourceTimestamp'] as const;
 export type SortKey=typeof sortKeys[number];
-export type Filters={asset?:string,type?:string,custody?:string,maxLockDays?:number,minTvlUsd?:number,hidePromo?:boolean,sort?:SortKey,direction?:'asc'|'desc'};
+export const presetNames=['staking','tvl','rewards','exchange','onchain'] as const;
+export type Filters={presets?:string[],asset?:string,type?:string,custody?:string,maxLockDays?:number,minTvlUsd?:number,hidePromo?:boolean,sort?:SortKey,direction?:'asc'|'desc'};
 export const types=['exchange earn','on-chain staking','liquid staking','lending pool','yield pool (classification unknown)'];
 export const custodies=['exchange holds coins','user on-chain','unknown'];
-export const filtersSchema={type:'object',additionalProperties:false,properties:{asset:{type:'string',maxLength:32},type:{type:'string',enum:types},custody:{type:'string',enum:custodies},maxLockDays:{type:'number',minimum:0,maximum:36500},minTvlUsd:{type:'number',minimum:0,maximum:1e15},hidePromo:{type:'boolean'},sort:{type:'string',enum:sortKeys},direction:{type:'string',enum:['asc','desc']}}};
+export const filtersSchema={type:'object',additionalProperties:false,properties:{presets:{type:'array',uniqueItems:true,items:{type:'string',enum:presetNames},maxItems:5},asset:{type:'string',maxLength:32},type:{type:'string',enum:types},custody:{type:'string',enum:custodies},maxLockDays:{type:'number',minimum:0,maximum:36500},minTvlUsd:{type:'number',minimum:0,maximum:1e15},hidePromo:{type:'boolean'},sort:{type:'string',enum:sortKeys},direction:{type:'string',enum:['asc','desc']}}};
 export function validateFilters(input:unknown):Filters {
  if(input===undefined)return {};
  if(!input||typeof input!=='object'||Array.isArray(input))throw Error('Invalid filters');
  const f=input as any;
  if(Object.keys(f).some(k=>!Object.keys(filtersSchema.properties).includes(k)))throw Error('Unknown filter');
+ if(f.presets!==undefined&&(!Array.isArray(f.presets)||f.presets.length>5||new Set(f.presets).size!==f.presets.length||f.presets.some((p:any)=>!presetNames.includes(p))))throw Error('Invalid presets');
  if(f.asset!==undefined&&(typeof f.asset!=='string'||f.asset.length>32))throw Error('Invalid asset');
  for(const [k,values] of [['type',types],['custody',custodies],['sort',sortKeys],['direction',['asc','desc']]] as const)if(f[k]!==undefined&&!(values as readonly string[]).includes(f[k]))throw Error('Invalid '+k);
  for(const [k,max] of [['maxLockDays',36500],['minTvlUsd',1e15]] as const)if(f[k]!==undefined&&(typeof f[k]!=='number'||!Number.isFinite(f[k])||f[k]<0||f[k]>max))throw Error('Invalid '+k);
@@ -36,7 +38,8 @@ export function ageSeconds(timestamp:string|null,now:number):number|null {
 }
 export function selectOptions(options:Option[],input:unknown,now=Date.now()) {
  const f=validateFilters(input),key=f.sort??'asset',direction=f.direction??'asc';
- const result=options.filter(o=>(!f.asset||o.asset.toLowerCase().includes(f.asset.toLowerCase()))&&(!f.type||o.type===f.type)&&(!f.custody||o.custody===f.custody)&&(f.maxLockDays===undefined||(o.lockDays!==null&&o.lockDays<=f.maxLockDays))&&(f.minTvlUsd===undefined||(o.tvlUsd!==null&&o.tvlUsd>=f.minTvlUsd))&&(!f.hidePromo||o.promo===false));
+ const presets=f.presets??[],minTvl=f.minTvlUsd??(presets.includes('tvl')?1e7:undefined);
+ const result=options.filter(o=>(!presets.includes('staking')||['on-chain staking','liquid staking'].includes(o.type))&&(!presets.includes('exchange')||o.custody==='exchange holds coins')&&(!presets.includes('onchain')||o.custody==='user on-chain')&&(!presets.includes('rewards')||(o.promo===false&&o.baseApy!==null&&o.baseApy>0&&o.rewardApy!==null&&o.rewardApy===0))&&(!f.asset||o.asset.toLowerCase().includes(f.asset.toLowerCase()))&&(!f.type||o.type===f.type)&&(!f.custody||o.custody===f.custody)&&(f.maxLockDays===undefined||(o.lockDays!==null&&o.lockDays<=f.maxLockDays))&&(minTvl===undefined||(o.tvlUsd!==null&&o.tvlUsd>=minTvl))&&(!f.hidePromo||o.promo===false));
  result.sort((a,b)=>{const x=Array.isArray(a[key])?(a[key] as string[]).join(', '):a[key],y=Array.isArray(b[key])?(b[key] as string[]).join(', '):b[key];if(x===null&&y!==null)return 1;if(y===null&&x!==null)return -1;const c=x===null&&y===null?0:typeof x==='number'&&typeof y==='number'?x-y:String(x).localeCompare(String(y),'en');return (direction==='asc'?c:-c)||a.id.localeCompare(b.id,'en');});
  return result.map(o=>{const fetchedAgeSeconds=ageSeconds(o.fetchedAt,now),sourceAgeSeconds=ageSeconds(o.sourceTimestamp,now);return {...o,fetchedAgeSeconds,sourceAgeSeconds,freshness:fetchedAgeSeconds===null||fetchedAgeSeconds*1000>=cacheMs?'stale cached snapshot':'cached snapshot',sourceFreshness:sourceAgeSeconds===null?'unknown':sourceAgeSeconds*1000>=sourceStaleMs?'stale source observation':'source observation'};});
 }
