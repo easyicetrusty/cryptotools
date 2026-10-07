@@ -1,0 +1,40 @@
+{
+  "label": "Official documentation example, not real account data",
+  "source": "okx-api.txt",
+  "capturedAt": "2026-10-07T16:46:58.120068+02:00",
+  "response": {
+    "code": "0",
+    "data": [
+      {
+        "ccy": "DOT",
+        "productId": "101",
+        "protocol": "Polkadot",
+        "protocolType": "defi",
+        "term": "0",
+        "apy": "0.1767",
+        "earlyRedeem": false,
+        "state": "purchasable",
+        "investData": [
+          {
+            "bal": "0",
+            "ccy": "DOT",
+            "maxAmt": "0",
+            "minAmt": "2"
+          }
+        ],
+        "earningData": [
+          {
+            "ccy": "DOT",
+            "earningType": "0"
+          }
+        ],
+        "fastRedemptionDailyLimit": "",
+        "redeemPeriod": [
+          "28D",
+          "28D"
+        ]
+      }
+    ],
+    "msg": ""
+  }
+}

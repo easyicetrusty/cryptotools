@@ -31,3 +31,10 @@ tokens.json
 
 evidence-staking/
 staking-test-data/
+
+evidence-byo/
+evidence-byo-sandbox/
+byo-test-data/
+byo-sandbox-data/
+byo-migration-data/
+byo-scan/

@@ -1,0 +1,333 @@
+{
+  "label": "Recorded anonymous public API response",
+  "source": "https://api.bybit.com/v5/earn/fixed-term/product",
+  "response": {
+    "retCode": 0,
+    "retMsg": "",
+    "result": {
+      "list": [
+        {
+          "productId": "1244",
+          "category": "FixedTermSaving",
+          "coin": "USDC",
+          "duration": "5d",
+          "status": "Available",
+          "tieredApyList": [],
+          "minStakeAmount": "100",
+          "maxStakeAmount": "500",
+          "precision": 4,
+          "subscribeStartAt": "1789632000000",
+          "subscribeEndAt": "1792137659000",
+          "allowEarlyRedemption": false,
+          "earlyRedemptionApy": "",
+          "redemptionLimitDuration": "",
+          "allowAutoReinvest": false,
+          "interestCoinApyList": [
+            {
+              "coin": "USDC",
+              "apy": "200.00%",
+              "expectUnitEarning": "0.0273",
+              "currentPrice": "1.00012"
+            }
+          ],
+          "isVip": false,
+          "creditTime": "1791851400000",
+          "specialUserGroupRequired": true,
+          "specialUserGroupInfo": "USDC on Arc"
+        },
+        {
+          "productId": "1094",
+          "category": "FixedTermSaving",
+          "coin": "XRP",
+          "duration": "90d",
+          "status": "Available",
+          "tieredApyList": [],
+          "minStakeAmount": "10",
+          "maxStakeAmount": "25000",
+          "precision": 6,
+          "subscribeStartAt": "1775178000000",
+          "subscribeEndAt": "1798847999000",
+          "allowEarlyRedemption": false,
+          "earlyRedemptionApy": "",
+          "redemptionLimitDuration": "",
+          "allowAutoReinvest": false,
+          "interestCoinApyList": [
+            {
+              "coin": "XRP",
+              "apy": "2.00%",
+              "expectUnitEarning": "0.004931",
+              "currentPrice": "1.443236666666666666666666666667"
+            }
+          ],
+          "isVip": false,
+          "creditTime": "1799195400000",
+          "specialUserGroupRequired": false,
+          "specialUserGroupInfo": ""
+        },
+        {
+          "productId": "735",
+          "category": "FixedTermSaving",
+          "coin": "MNT",
+          "duration": "120d",
+          "status": "SoldOut",
+          "tieredApyList": [],
+          "minStakeAmount": "100",
+          "maxStakeAmount": "1800000",
+          "precision": 6,
+          "subscribeStartAt": "1756375200000",
+          "subscribeEndAt": "1798761599000",
+          "allowEarlyRedemption": false,
+          "earlyRedemptionApy": "",
+          "redemptionLimitDuration": "",
+          "allowAutoReinvest": false,
+          "interestCoinApyList": [
+            {
+              "coin": "MNT",
+              "apy": "2.00%",
+              "expectUnitEarning": "0.006575",
+              "currentPrice": "0.576323333333333333333333333333"
+            }
+          ],
+          "isVip": false,
+          "creditTime": "1801787400000",
+          "specialUserGroupRequired": false,
+          "specialUserGroupInfo": ""
+        },
+        {
+          "productId": "4",
+          "category": "FundPool",
+          "coin": "USDT",
+          "duration": "7d",
+          "status": "Available",
+          "tieredApyList": [],
+          "minStakeAmount": "500",
+          "maxStakeAmount": "9000000",
+          "precision": 4,
+          "subscribeStartAt": "1697019748000",
+          "subscribeEndAt": "0",
+          "allowEarlyRedemption": true,
+          "earlyRedemptionApy": "0.30%",
+          "redemptionLimitDuration": "0d",
+          "allowAutoReinvest": true,
+          "interestCoinApyList": [
+            {
+              "coin": "USDT",
+              "apy": "2.50%",
+              "expectUnitEarning": "0.0004",
+              "currentPrice": "1.00"
+            }
+          ],
+          "isVip": true,
+          "creditTime": "1792029900000",
+          "specialUserGroupRequired": false,
+          "specialUserGroupInfo": ""
+        },
+        {
+          "productId": "5",
+          "category": "FundPool",
+          "coin": "USDT",
+          "duration": "7d",
+          "status": "Available",
+          "tieredApyList": [],
+          "minStakeAmount": "100",
+          "maxStakeAmount": "100000",
+          "precision": 4,
+          "subscribeStartAt": "1697019839000",
+          "subscribeEndAt": "0",
+          "allowEarlyRedemption": false,
+          "earlyRedemptionApy": "0.00%",
+          "redemptionLimitDuration": "0d",
+          "allowAutoReinvest": true,
+          "interestCoinApyList": [
+            {
+              "coin": "USDT",
+              "apy": "2.00%",
+              "expectUnitEarning": "0.0003",
+              "currentPrice": "1.00"
+            }
+          ],
+          "isVip": false,
+          "creditTime": "1792029900000",
+          "specialUserGroupRequired": false,
+          "specialUserGroupInfo": ""
+        },
+        {
+          "productId": "8",
+          "category": "FundPool",
+          "coin": "BTC",
+          "duration": "30d",
+          "status": "SoldOut",
+          "tieredApyList": [],
+          "minStakeAmount": "0.2",
+          "maxStakeAmount": "50",
+          "precision": 8,
+          "subscribeStartAt": "1717405200000",
+          "subscribeEndAt": "0",
+          "allowEarlyRedemption": true,
+          "earlyRedemptionApy": "0.30%",
+          "redemptionLimitDuration": "0d",
+          "allowAutoReinvest": true,
+          "interestCoinApyList": [
+            {
+              "coin": "BTC",
+              "apy": "0.30%",
+              "expectUnitEarning": "0.00024657",
+              "currentPrice": "83448.853333333333333333333333333333"
+            }
+          ],
+          "isVip": true,
+          "creditTime": "1794017100000",
+          "specialUserGroupRequired": false,
+          "specialUserGroupInfo": ""
+        },
+        {
+          "productId": "9",
+          "category": "FundPool",
+          "coin": "BTC",
+          "duration": "30d",
+          "status": "Available",
+          "tieredApyList": [],
+          "minStakeAmount": "0.01",
+          "maxStakeAmount": "1",
+          "precision": 8,
+          "subscribeStartAt": "1718964000000",
+          "subscribeEndAt": "0",
+          "allowEarlyRedemption": false,
+          "earlyRedemptionApy": "0.00%",
+          "redemptionLimitDuration": "0d",
+          "allowAutoReinvest": false,
+          "interestCoinApyList": [
+            {
+              "coin": "BTC",
+              "apy": "0.20%",
+              "expectUnitEarning": "0.00016438",
+              "currentPrice": "83448.853333333333333333333333333333"
+            }
+          ],
+          "isVip": false,
+          "creditTime": "1794017100000",
+          "specialUserGroupRequired": false,
+          "specialUserGroupInfo": ""
+        },
+        {
+          "productId": "3",
+          "category": "FundPoolPremium",
+          "coin": "USDT",
+          "duration": "60d",
+          "status": "Available",
+          "tieredApyList": [],
+          "minStakeAmount": "100000",
+          "maxStakeAmount": "800000",
+          "precision": 4,
+          "subscribeStartAt": "1731974400000",
+          "subscribeEndAt": "0",
+          "allowEarlyRedemption": false,
+          "earlyRedemptionApy": "",
+          "redemptionLimitDuration": "",
+          "allowAutoReinvest": false,
+          "interestCoinApyList": [
+            {
+              "coin": "USDT",
+              "apy": "2.20%",
+              "expectUnitEarning": "0.0036",
+              "currentPrice": "1.00"
+            }
+          ],
+          "isVip": true,
+          "creditTime": "1796608800000",
+          "specialUserGroupRequired": false,
+          "specialUserGroupInfo": ""
+        },
+        {
+          "productId": "4",
+          "category": "FundPoolPremium",
+          "coin": "USDT",
+          "duration": "90d",
+          "status": "Available",
+          "tieredApyList": [],
+          "minStakeAmount": "100000",
+          "maxStakeAmount": "1200000",
+          "precision": 4,
+          "subscribeStartAt": "1731974400000",
+          "subscribeEndAt": "0",
+          "allowEarlyRedemption": false,
+          "earlyRedemptionApy": "",
+          "redemptionLimitDuration": "",
+          "allowAutoReinvest": false,
+          "interestCoinApyList": [
+            {
+              "coin": "USDT",
+              "apy": "2.50%",
+              "expectUnitEarning": "0.0061",
+              "currentPrice": "1.00"
+            }
+          ],
+          "isVip": true,
+          "creditTime": "1799200800000",
+          "specialUserGroupRequired": false,
+          "specialUserGroupInfo": ""
+        },
+        {
+          "productId": "5",
+          "category": "FundPoolPremium",
+          "coin": "USDT",
+          "duration": "120d",
+          "status": "Available",
+          "tieredApyList": [],
+          "minStakeAmount": "100000",
+          "maxStakeAmount": "800000",
+          "precision": 4,
+          "subscribeStartAt": "1731974400000",
+          "subscribeEndAt": "0",
+          "allowEarlyRedemption": false,
+          "earlyRedemptionApy": "",
+          "redemptionLimitDuration": "",
+          "allowAutoReinvest": false,
+          "interestCoinApyList": [
+            {
+              "coin": "USDT",
+              "apy": "2.60%",
+              "expectUnitEarning": "0.0085",
+              "currentPrice": "1.00"
+            }
+          ],
+          "isVip": true,
+          "creditTime": "1801792800000",
+          "specialUserGroupRequired": false,
+          "specialUserGroupInfo": ""
+        },
+        {
+          "productId": "6",
+          "category": "FundPoolPremium",
+          "coin": "USDT",
+          "duration": "180d",
+          "status": "Available",
+          "tieredApyList": [],
+          "minStakeAmount": "300000",
+          "maxStakeAmount": "650000",
+          "precision": 4,
+          "subscribeStartAt": "1731974400000",
+          "subscribeEndAt": "0",
+          "allowEarlyRedemption": false,
+          "earlyRedemptionApy": "",
+          "redemptionLimitDuration": "",
+          "allowAutoReinvest": false,
+          "interestCoinApyList": [
+            {
+              "coin": "USDT",
+              "apy": "2.70%",
+              "expectUnitEarning": "0.0133",
+              "currentPrice": "1.00"
+            }
+          ],
+          "isVip": true,
+          "creditTime": "1806976800000",
+          "specialUserGroupRequired": false,
+          "specialUserGroupInfo": ""
+        }
+      ]
+    },
+    "retExtInfo": {},
+    "time": 1791379276465
+  }
+}

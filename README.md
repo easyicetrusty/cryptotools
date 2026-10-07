@@ -2,20 +2,30 @@
 
 A local, single-user crypto research workspace. This is a free beta prototype for paper research only. It uses public market data, cost-aware historical tests, manually entered paper holdings and an optional AI assistant.
 
-**No live trading, no orders and no exchange credentials.** There is no testnet order execution either. This is information, not financial advice. The user decides. Historical results and model output are not forecasts. Read [DISCLAIMER.md](DISCLAIMER.md).
+**No live trading or orders.** Exchange keys, if you save them locally, are used only for read-only product listings. There is no testnet order execution either. This is information, not financial advice. The user decides. Historical results and model output are not forecasts. Read [DISCLAIMER.md](DISCLAIMER.md).
 
 Licence: GNU Affero General Public License v3.0 (AGPL-3.0). See [LICENSE](LICENSE). Copyright (C) 2026 easyicetrusty.
 
 ## What works today
 
-- Public spot data through ccxt for Kraken, OKX and Bybit, subject to endpoint availability and history limits.
+- User-enabled public spot connectors through ccxt for Kraken, OKX, Bybit, Binance and Coinbase Exchange, subject to access and history limits. Every source starts off.
 - Historical hold, SMA crossover, daily weekly-trend and RSI tests with per-fill fees and slippage. Strategy results are compared with timestamp-aligned BTC hold using the same quote currency, starting capital and modeled costs.
-- Manual paper holdings valued with public Kraken quotes, plus CSV export. These are not exchange account balances. Different quote currencies are not summed.
+- Manual paper holdings valued with an enabled spot connector, plus CSV export. These are not exchange account balances. Different quote currencies are not summed.
 - A BYOK assistant and four read-only background workers: research, backtest, risk and reviewer. Supported provider configurations: OpenAI, Anthropic, Mistral, Gemini's compatible endpoint, DeepSeek, OpenRouter and local Ollama. You choose the provider and model; provider charges may apply.
-- A source-limited neutral staking view with asset/type/custody/lock-up/TVL/promo filters, user-controlled sorting and timestamped SQLite caching. Currently one verified Lido liquid-staking feed publishes APR; APY and unsourced fields remain unknown. This is not yet a cross-venue comparison. DefiLlama/exchange feeds remain excluded pending reuse permissions or read-only keys. See [data-source notes](docs/STAKING-SOURCES.md).
+- Neutral staking data from your enabled DefiLlama free/Pro, Lido and Bybit public earn connectors, plus read-only Kraken/Binance/OKX earn adapters tested against official examples, not real keys. Filters, sorting and timestamped SQLite caching preserve unknowns. Not a complete market survey. See [data-source notes](docs/DATA-SOURCES.md).
 - Password login, optional authenticator TOTP, dark and light themes, in-app feedback and optional usage counters (off by default).
 
 The assistant is instructed to return neutral data rather than recommendations. Model prose remains untrusted. Code limits its tools to public data, timestamped staking snapshots, backtests and paper holdings; a prompt is not a security boundary.
+
+## Your data, your access
+
+The app supplies connectors, not data or a data subscription. Nothing is enabled by default. In **Data sources**, read the provider’s terms, accept them under your own account and enable only sources you are entitled to use. Acceptance here is not a licence and does not override commercial-use or redistribution restrictions. You are responsible for complying with the provider’s terms.
+
+Onboarding lets you choose sources or skip. With no enabled sources, screens show an empty state and link to Data sources. On upgrade, previously implicit sources become disabled until you accept; a one-time notice explains the change. Disabled sources are never fetched, including through AI tools or historical caches.
+
+Exchange earn keys must be read-only: no trading, transfers or withdrawals. Whitelist your VPS IP at the provider. Binance, OKX and Kraken permission checks refuse unsafe or unverifiable keys before enablement and each fetch. Keys use the existing AI-key encryption vault, are hidden from API responses and deletable. Authenticated adapters are **not yet tested with a real key**; DefiLlama Pro is not tested with a paid key. Public connectors need no key. No exchange balance import or transaction paths exist.
+
+For a hosted tester sandbox, set `CRYPTOTOOLS_SANDBOX=1` before starting Compose. Only keyless data sources can be enabled; key fields are disabled and the backend rejects data credentials. This does not disable AI BYOK. [Connector links and verification limits](docs/DATA-SOURCES.md).
 
 ## Install
 
@@ -65,7 +75,7 @@ Download and review [compose.yaml](compose.yaml), then run from its directory:
 docker compose pull && docker compose up -d --wait --wait-timeout 180
 ```
 
-To pin a release instead of `latest`, set `CRYPTOTOOLS_IMAGE=ghcr.io/easyicetrusty/cryptotools:0.4.0` (PowerShell: `$env:CRYPTOTOOLS_IMAGE = 'ghcr.io/easyicetrusty/cryptotools:0.4.0'`). `APP_PORT` overrides port 8080 and `CRYPTOTOOLS_DIR` overrides the install directory. Repeat any overrides when updating or stopping. The Compose project name and volume names stay `cryptotools`; changing the install directory does not create a separate instance.
+To pin a release instead of `latest`, set `CRYPTOTOOLS_IMAGE=ghcr.io/easyicetrusty/cryptotools:0.5.0` (PowerShell: `$env:CRYPTOTOOLS_IMAGE = 'ghcr.io/easyicetrusty/cryptotools:0.5.0'`). `APP_PORT` overrides port 8080 and `CRYPTOTOOLS_DIR` overrides the install directory. Repeat any overrides when updating or stopping. The Compose project name and volume names stay `cryptotools`; changing the install directory does not create a separate instance.
 
 ## Where data goes
 
@@ -73,12 +83,12 @@ Your database, cached candles, paper holdings, backtest/job records and saved se
 
 There are important exceptions:
 
-- Public prices and candles are fetched from exchanges over the Internet. Staking APR is fetched from the Lido public API, at most once per 15 minutes per database; source fetch timestamps and observation ages are shown, including stale cached data after failures.
+- Only enabled sources are contacted over the Internet from your installation. Staking snapshots have a 15-minute persisted refresh/failure cooldown; user-initiated connection tests may fetch outside it. Retrieval and provider observation times are separate; unavailable observations stay unknown. DefiLlama Pro's key is part of its official request URL but is not returned or logged by the app.
 - If you enable a hosted AI provider, prompts and requested tool data, including paper holdings, go to that provider. Its terms and retention rules apply. Local Ollama avoids a hosted AI provider but requires a reachable model service and explicit endpoint configuration. Inside Docker, `127.0.0.1` refers to the container, not your host.
 - Feedback sends version, screen and what you type to the configured feedback service. The default is local. An overridden `FEEDBACK_URL` can be remote. Never paste private material; the free-text filter is incomplete.
 - Optional usage counters send only allowlisted names and counts to the configured feedback service. Opting out stops new counts, not deletion of existing counts.
 
-Provider keys and TOTP secrets are encrypted at rest. The default randomly generated master key is stored alongside the database in the app volume. Someone who can read both can decrypt them. Back up both together; losing the master key loses access to saved keys. This is not hardware isolation. Authentication recovery and TOTP disable/reset UI are not implemented; retain your authenticator before enabling 2FA. See [SECURITY.md](SECURITY.md).
+AI and data-provider keys and TOTP secrets are encrypted at rest. The default randomly generated master key is stored alongside the database in the app volume. Someone who can read both can decrypt them. Back up both together; losing the master key loses access to saved keys. This is not hardware isolation. Authentication recovery and TOTP disable/reset UI are not implemented; retain your authenticator before enabling 2FA. See [SECURITY.md](SECURITY.md).
 
 ## Screenshots
 
@@ -98,6 +108,16 @@ These 0.4.0 renders use a real anonymous Lido API snapshot fetched on 7 October 
 
 ![Light mobile source-limited staking data](docs/screenshots/clear-staking-390.png)
 
+### Bring-your-own-access screens
+
+The 0.5.0 Data sources and empty-state renders show default-off connectors. Staking uses a real free DefiLlama response fetched by the disposable test installation after explicit acceptance, not bundled demo data. This neutral asset-filtered view is not a recommendation.
+
+![Data source settings](docs/screenshots/night-sources-1440.png)
+
+![Light mobile empty state](docs/screenshots/clear-empty-390.png)
+
+![User-enabled free yield data](docs/screenshots/night-staking-defillama-1440.png)
+
 ## Development and test status
 
 Node 22 is required for the built-in SQLite API. From a fresh checkout:
@@ -106,7 +126,7 @@ Node 22 is required for the built-in SQLite API. From a fresh checkout:
 npm ci && npm test
 ```
 
-`npm test` builds TypeScript and the frontend before running unit tests. The 0.4.0 source revision passed 35 unit tests in a Linux VM, including recorded-real Lido normalization, strict unknown handling, neutral sorting/filtering, cache restart/concurrency/failure/staleness and both AI tool protocols. Staking renders use actual public Lido data in both themes at 390, 768, 1024 and 1440 pixels. Previous focused browser checks covered both themes at 390 and 1440 pixels, real public candles and mocked provider protocols.
+`npm test` builds TypeScript and the frontend before running unit tests. The 0.5.0 revision passed 51 unit tests and a fresh Docker build, with default-off/terms gates, zero-call disabled-source mocks, encrypted credential and permission-refusal checks, sandbox, strict unknowns and source/bundle transaction-call scans. Browser checks cover both themes at 390/1440: Data sources, onboarding, empty states and real enabled free DefiLlama data. An actual 0.4.0 data volume upgrade preserves password/holdings while disabling sources and hiding old cache. All five keyless spot connectors and public Bybit earn/Lido connection tests returned real data in the Linux VM. The 0.4.0 source revision passed 35 unit tests in a Linux VM, including recorded-real Lido normalization, strict unknown handling, neutral sorting/filtering, cache restart/concurrency/failure/staleness and both AI tool protocols. Staking renders use actual public Lido data in both themes at 390, 768, 1024 and 1440 pixels. Previous focused browser checks covered both themes at 390 and 1440 pixels, real public candles and mocked provider protocols.
 
 **Native Windows and macOS installation are not yet verified.** PowerShell-on-Linux testing is not Windows testing. The arm64 release is checked under QEMU on Linux, not on native ARM hardware. Real hosted AI credentials have not been validated; provider support describes implemented configurations, not a compatibility guarantee.
 

@@ -9,6 +9,7 @@ services:
       FEEDBACK_URL: ${FEEDBACK_URL:-http://feedback:8081/feedback}
       MASTER_SECRET_FILE: /data/master.secret
       SECURE_COOKIE: ${SECURE_COOKIE:-0}
+      CRYPTOTOOLS_SANDBOX: ${CRYPTOTOOLS_SANDBOX:-0}
     volumes: ["app-data:/data"]
     depends_on:
       feedback:

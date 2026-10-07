@@ -1,0 +1,16 @@
+{
+  "label": "Synthetic safe-key mutation of official permission schema; not real credentials",
+  "source": "https://github.com/binance/binance-api-swagger/blob/master/spot_api.yaml",
+  "capturedAt": "2026-10-07T16:47:27.248343+02:00",
+  "response": {
+    "enableReading": true,
+    "enableWithdrawals": false,
+    "enableSpotAndMarginTrading": false,
+    "enableInternalTransfer": false,
+    "permitsUniversalTransfer": false,
+    "enableFutures": false,
+    "enableVanillaOptions": false,
+    "enableMargin": false,
+    "enablePortfolioMarginTrading": false
+  }
+}
