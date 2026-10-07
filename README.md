@@ -21,7 +21,7 @@ The app and internal feedback service use separate named volumes. Containers are
 ## Data and security boundary
 
 - ccxt spot adapters: Kraken, OKX, Bybit. A transport guard allows only GET requests to audited public market paths. No exchange keys or application order routes.
-- Strategy signals use closed candles; fills use the next open. Full equity, long-only, fractional units. Fees and adverse slippage per fill. Hold uses the same symbol/capital/costs; it is a BTC benchmark when BTC is selected.
+- Strategy signals use closed candles; fills use the next open. Full equity, long-only, fractional units. Fees and adverse slippage per fill. The reference is BTC hold in the same quote currency, with the same capital and modeled costs. Strategy and BTC candles are aligned by timestamp. BTC-quoted markets compare against holding native BTC without a fictitious conversion fee.
 - SMA crossover, 7-day weekly trend on daily candles, Wilder RSI reversion, hold. Final open positions are marked at the last close, not forcibly sold. Completed trades and open positions are separate. Undefined profit factor is represented as null.
 - Partial exchange coverage is explicitly shown. Internal candle gaps reject a test. Public endpoints can be unavailable or rate-limited. Quote currencies are not converted or summed.
 - Paper holdings are manual and value against live public Kraken prices. CSV includes quote-currency P&L. This is not an exchange balance.
