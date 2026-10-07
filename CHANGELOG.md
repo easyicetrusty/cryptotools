@@ -1,5 +1,13 @@
 # What’s new
 
+## 0.7.0 · Honest test bench
+- Dated, hashed public ccxt market-rule snapshots, exchange precision rounding, minimum/bound rejections and retained residual cash/dust. Skipped attempts are counted rather than silently filled; unknown constraints remain unverified.
+- Taker fee defaults with source/date and explicit overrides; independent BTC rules/fees. The captured current Kraken general-spot schedule replaces stale ccxt defaults on identified BTC/ETH/SOL-base pairs, with both values retained.
+- Optional causal volatility/volume slippage alongside flat bps, with formula and zero-volume handling shown. No order-book or real-fill claims.
+- Explicit closed-bar signal / next-open contract, pre-range indicator startup and bar-by-bar cash/inventory/fee/slippage ledger. Synthetic all-strategy causality/accounting tests and dated recorded market fixtures.
+- Every result has a modelled/omitted panel. New saved runs freeze candles, warm-up, market/fee snapshots, parameters, source, range and versions; Re-run exactly uses the source-gated local bundle and shows identical or differences. Older results remain labelled legacy.
+- Existing BTC comparisons, provenance, source/access gates and paper-only boundaries retained. [Methods and limitations](docs/HONEST-BENCH.md).
+
 ## 0.6.1 · Wider activity coverage
 - Surge universe defaults to 50 markets per enabled exchange, selectable 25/50/100. Visible scan progress, partial rows, market coverage and failed/incomplete histories. Mechanical ratio sort; ten rows initially with an all-scanned-markets control.
 - Two concurrent history jobs globally, one per venue, respecting ccxt rate limits. Identical scans coalesce and cache for five minutes; passive progress reads never start scans. Closed UTC candles persist and reuse across filters, universe changes and midnight; only gaps are fetched.

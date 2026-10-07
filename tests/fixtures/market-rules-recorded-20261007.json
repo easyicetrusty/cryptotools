@@ -1,0 +1,285 @@
+[
+  {
+    "label": "recorded",
+    "capturedAt": "2026-10-07T17:30:20.496Z",
+    "exchange": "kraken",
+    "source": "ccxt 4.5.85 public loadMarkets; recorded, not historical rules",
+    "adapter": {
+      "precisionMode": 4,
+      "fees": {
+        "trading": {
+          "tierBased": true,
+          "percentage": true,
+          "taker": 0.0026,
+          "maker": 0.0016,
+          "tiers": {
+            "taker": [
+              [
+                0,
+                0.0026
+              ],
+              [
+                50000,
+                0.0024
+              ],
+              [
+                100000,
+                0.0022
+              ],
+              [
+                250000,
+                0.002
+              ],
+              [
+                500000,
+                0.0018
+              ],
+              [
+                1000000,
+                0.0016
+              ],
+              [
+                2500000,
+                0.0014
+              ],
+              [
+                5000000,
+                0.0012
+              ],
+              [
+                10000000,
+                0.0001
+              ]
+            ],
+            "maker": [
+              [
+                0,
+                0.0016
+              ],
+              [
+                50000,
+                0.0014
+              ],
+              [
+                100000,
+                0.0012
+              ],
+              [
+                250000,
+                0.001
+              ],
+              [
+                500000,
+                0.0008
+              ],
+              [
+                1000000,
+                0.0006
+              ],
+              [
+                2500000,
+                0.0004
+              ],
+              [
+                5000000,
+                0.0002
+              ],
+              [
+                10000000,
+                0
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "market": {
+      "symbol": "BTC/USDT",
+      "spot": true,
+      "precision": {
+        "amount": 1e-08,
+        "price": 0.1
+      },
+      "limits": {
+        "leverage": {
+          "min": 1,
+          "max": 10
+        },
+        "amount": {
+          "min": 5e-05
+        },
+        "price": {},
+        "cost": {
+          "min": 0.5
+        }
+      },
+      "maker": 0.0016,
+      "taker": 0.0026
+    }
+  },
+  {
+    "label": "recorded",
+    "capturedAt": "2026-10-07T17:30:20.964Z",
+    "exchange": "okx",
+    "source": "ccxt 4.5.85 public loadMarkets; recorded, not historical rules",
+    "adapter": {
+      "precisionMode": 4,
+      "fees": {
+        "trading": {
+          "taker": 0.0015,
+          "maker": 0.001
+        }
+      }
+    },
+    "market": {
+      "symbol": "BTC/USDT",
+      "spot": true,
+      "precision": {
+        "amount": 1e-08,
+        "price": 0.1
+      },
+      "limits": {
+        "leverage": {
+          "min": 1,
+          "max": 10
+        },
+        "amount": {
+          "min": 1e-05,
+          "max": 9999999999
+        },
+        "price": {},
+        "cost": {
+          "max": 1000000
+        }
+      },
+      "maker": 0.001,
+      "taker": 0.0015
+    }
+  },
+  {
+    "label": "recorded",
+    "capturedAt": "2026-10-07T17:30:21.788Z",
+    "exchange": "bybit",
+    "source": "ccxt 4.5.85 public loadMarkets; recorded, not historical rules",
+    "adapter": {
+      "precisionMode": 4,
+      "fees": {
+        "trading": {
+          "tierBased": true,
+          "percentage": true,
+          "taker": 0.00075,
+          "maker": 0.0001,
+          "feeSide": "get"
+        }
+      }
+    },
+    "market": {
+      "symbol": "BTC/USDT",
+      "spot": true,
+      "precision": {
+        "amount": 1e-06,
+        "price": 0.1
+      },
+      "limits": {
+        "leverage": {
+          "min": 1
+        },
+        "amount": {
+          "min": 1e-06,
+          "max": 230
+        },
+        "price": {},
+        "cost": {
+          "min": 5,
+          "max": 8000000
+        }
+      },
+      "maker": 0.001,
+      "taker": 0.001
+    }
+  },
+  {
+    "label": "recorded",
+    "capturedAt": "2026-10-07T17:30:23.421Z",
+    "exchange": "binance",
+    "source": "ccxt 4.5.85 public loadMarkets; recorded, not historical rules",
+    "adapter": {
+      "precisionMode": 4,
+      "fees": {
+        "trading": {
+          "tierBased": false,
+          "percentage": true,
+          "taker": 0.001,
+          "maker": 0.001,
+          "feeSide": "get"
+        }
+      }
+    },
+    "market": {
+      "symbol": "BTC/USDT",
+      "spot": true,
+      "precision": {
+        "amount": 1e-05,
+        "price": 0.01,
+        "base": 1e-08,
+        "quote": 1e-08
+      },
+      "limits": {
+        "leverage": {},
+        "amount": {
+          "min": 1e-05,
+          "max": 9000
+        },
+        "price": {
+          "min": 0.01,
+          "max": 1000000
+        },
+        "cost": {
+          "min": 5,
+          "max": 9000000
+        },
+        "market": {
+          "min": 0,
+          "max": 125.42418991
+        }
+      },
+      "maker": 0.001,
+      "taker": 0.001
+    }
+  },
+  {
+    "label": "recorded",
+    "capturedAt": "2026-10-07T17:30:23.718Z",
+    "exchange": "coinbase",
+    "source": "ccxt 4.5.85 public loadMarkets; recorded, not historical rules",
+    "adapter": {
+      "precisionMode": 4,
+      "fees": {
+        "trading": {
+          "tierBased": true,
+          "percentage": true,
+          "taker": 0.006,
+          "maker": 0.004
+        }
+      }
+    },
+    "market": {
+      "symbol": "BTC/USDT",
+      "spot": true,
+      "precision": {
+        "amount": 1e-08,
+        "price": 0.01
+      },
+      "limits": {
+        "leverage": {},
+        "amount": {},
+        "price": {},
+        "cost": {
+          "min": 1
+        }
+      },
+      "maker": 0.004,
+      "taker": 0.006
+    }
+  }
+]
