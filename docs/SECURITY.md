@@ -2,7 +2,7 @@
 
 ## Text leaving the installation
 
-Feedback and each outgoing AI request are refused when text contains an app-held secret or a common secret pattern. The comparison includes every provider key, all exchange keys/secrets/passphrases, DefiLlama Pro keys, Telegram tokens, SMTP passwords, pending/enabled TOTP secrets and master material (text, hex and base64 representations, plus the derived encryption key). Decryption happens only in the synchronous comparison, without a plaintext cache, log or export. Broken ciphertext fails closed.
+Feedback and each outgoing AI request are refused when text contains an app-held secret or a common secret pattern. The comparison includes every provider key, all exchange keys/secrets/passphrases, DefiLlama Pro keys, Telegram tokens, SMTP passwords, pending/enabled TOTP secrets, stored password/session hashes and master material (text, hex and base64 representations, plus the derived encryption key). Decryption happens only in the synchronous comparison, without a plaintext cache, log or export. Broken ciphertext fails closed. A pasted raw session nonce is recognized by hashing it against the stored session hash; plaintext sessions are never cached for filtering. Login passwords are not retained in plaintext.
 
 The UI says “Remove sensitive information. Nothing was sent.” No silent redaction or resend occurs. Gemini AIza, sk-/sk-ant-, conservative 32-character Mistral-shaped strings, Telegram tokens, JWTs and PEM markers are a second net. This is not a guarantee about unknown secrets, transformed/fragmented secrets or personal data. Do not paste private material.
 
