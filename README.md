@@ -4,7 +4,7 @@ A local, single-user crypto research workspace. This is a free beta prototype fo
 
 **No live trading, no orders and no exchange credentials.** There is no testnet order execution either. This is information, not financial advice. The user decides. Historical results and model output are not forecasts. Read [DISCLAIMER.md](DISCLAIMER.md).
 
-Licence: to be announced
+Licence: GNU Affero General Public License v3.0 (AGPL-3.0). See [LICENSE](LICENSE). Copyright (C) 2026 easyicetrusty.
 
 ## What works today
 

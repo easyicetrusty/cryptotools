@@ -6,4 +6,4 @@ It provides information, not financial, investment, tax or legal advice. It does
 
 Public data may be delayed, incomplete, unavailable or incorrect. Backtests depend on assumptions and past observations. Fees and slippage are modeled, not actual fills. Results omit effects such as market impact beyond modeled slippage, minimum-order rounding, funding, borrowing and liquidation. A result is not a forecast or a promise of returns. Paper holdings are manually entered simulations, not verified account balances.
 
-Crypto assets can lose all their value. This prototype may contain bugs and lose local data. Keep backups and protect credentials. Hosted AI providers may charge for requests and receive prompt/tool data. Nothing in this file replaces the licence terms that remain to be announced, or limits rights that cannot legally be excluded.
+Crypto assets can lose all their value. This prototype may contain bugs and lose local data. Keep backups and protect credentials. Hosted AI providers may charge for requests and receive prompt/tool data. Nothing in this file replaces the AGPL-3.0 licence terms in LICENSE, or limits rights that cannot legally be excluded.

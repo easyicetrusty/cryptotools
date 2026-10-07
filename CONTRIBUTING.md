@@ -6,4 +6,4 @@ For code work, discuss the change in an issue first, keep it focused, and run `n
 
 Keep the product data-only and paper-only. Do not add order execution, exchange credentials, financial recommendations or undisclosed remote data transfers. Clearly label synthetic data and fake test credentials.
 
-Licence: to be announced. This repository is not yet offered under an open-source licence. Please wait for licence terms before submitting code for inclusion or redistributing it.
+Licence: contributions are accepted under the GNU Affero General Public License v3.0 (AGPL-3.0), the licence of this repository. See [LICENSE](LICENSE).
