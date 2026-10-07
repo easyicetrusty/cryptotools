@@ -1,4 +1,6 @@
-# Results you can inspect (0.7.1)
+# Results you can inspect (0.7.1-beta.2)
+
+The original v0.7.1 tag is retained. This correction closes a cross-timeframe seal/seen-history gap: changing timeframe on the same source/market/dates cannot bypass an active seal or claim fresh evidence. Metrics, fills and existing saved results retain their original definitions.
 
 Past behaviour of a simulation. Not a forecast. Not financial advice.
 
@@ -76,4 +78,4 @@ Explicit **Unseal once** plus confirmation evaluates [Split,End). Strategy param
 
 Prior overlapping ordinary saved runs or read-only AI inspections mark a newly created sealed window **seen**. Unsealing another overlapping experiment marks waiting windows seen. Later parameter revisions and ordinary retests on inspected sealed dates carry **SEEN WINDOW** labels and frozen manifest annotations. Initial untouched inspection retains its original seen=false label instead of retroactively changing it after opening.
 
-This is an honest **local workflow, not cryptographic secrecy**. The installation owner can read the database or independently obtain public history. Resetting/deleting a data volume loses inspection history. Changing source/symbol/timeframe creates a separately tracked data window; this does not prove information independence. There is no optimizer, automated walk-forward or promise of untampered out-of-sample evidence.
+This is an honest **local workflow, not cryptographic secrecy**. The installation owner can read the database or independently obtain public history. Resetting/deleting a data volume loses inspection history. Changing source/symbol creates a separately tracked data window; changing timeframe does not reset date inspection history. For the same source and market, all timeframes share the seal/seen-date guard; this does not prove information independence. There is no optimizer, automated walk-forward or promise of untampered out-of-sample evidence.

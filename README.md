@@ -79,7 +79,7 @@ Download and review [compose.yaml](compose.yaml), then run from its directory:
 docker compose pull && docker compose up -d --wait --wait-timeout 180
 ```
 
-To pin a release instead of `latest`, set `CRYPTOTOOLS_IMAGE=ghcr.io/easyicetrusty/cryptotools:0.7.1` (PowerShell: `$env:CRYPTOTOOLS_IMAGE = 'ghcr.io/easyicetrusty/cryptotools:0.7.1'`). `APP_PORT` overrides port 8080 and `CRYPTOTOOLS_DIR` overrides the install directory. Repeat any overrides when updating or stopping. The Compose project name and volume names stay `cryptotools`; changing the install directory does not create a separate instance.
+To pin a release instead of `latest`, set `CRYPTOTOOLS_IMAGE=ghcr.io/easyicetrusty/cryptotools:0.7.1-beta.2` (PowerShell: `$env:CRYPTOTOOLS_IMAGE = 'ghcr.io/easyicetrusty/cryptotools:0.7.1-beta.2'`). `APP_PORT` overrides port 8080 and `CRYPTOTOOLS_DIR` overrides the install directory. Repeat any overrides when updating or stopping. The Compose project name and volume names stay `cryptotools`; changing the install directory does not create a separate instance.
 
 ## Where data goes
 
@@ -147,6 +147,8 @@ The 0.7.0 bench records the current market metadata applied historically, preser
 ![Light mobile below-minimum skipped attempts](docs/screenshots/v070-clear-minimum-skip-390.png)
 
 ### Results you can inspect
+
+Current revision **0.7.1-beta.2** corrects a cross-timeframe seal/history gap found after tagging 0.7.1: every timeframe for the same source/market shares the date guard and inspected-state history. Original v0.7.1 is retained and superseded; metric/fill definitions are unchanged.
 
 Version 0.7.1 adds daily-equity analytics, independent same-quote BTC metrics, saved-run comparison and a sealed-window workflow. It is information about simulations, not advice, rankings or a forecast. Reports are escaped inline HTML/SVG with the run manifest, modelled/omitted panel, source provenance, daily returns and both ledgers. The default report is light and print-friendly; downloaded files are outside later source revocation. The sealing workflow is local, not cryptographic secrecy: owners can inspect their database/public history, and deleting a volume loses inspection history.
 

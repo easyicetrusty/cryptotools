@@ -1,5 +1,10 @@
 # What’s new
 
+## 0.7.1-beta.2 · Keep sealed dates sealed across timeframes
+- Active seals and inspected-date history now span every timeframe for the same source and market. An hourly retest cannot bypass a daily seal or lose its seen label.
+- Added cross-timeframe state-machine and real API/browser regressions. Numerical metrics and fill economics are unchanged.
+- The original v0.7.1 tag is preserved and superseded, not rewritten. Current prerelease is v0.7.1-beta.2.
+
 ## 0.7.1 · Results you can inspect
 - Strategy and BTC daily marked-equity metrics: returns/CAGR, annualised volatility, Sharpe/Sortino/Calmar, drawdown episodes/duration, historical VaR/CVaR, observed periods, held-time exposure, skew/kurtosis and PSR against SR 0. Crypto annualisation 365; RF 0 by default/editable; undefined values and PSR assumptions explicit.
 - Equity/underwater plots, monthly returns heatmaps and trailing 30/90-day Sharpe/volatility. Independent TypeScript formulas with pinned cowork-only QuantStats oracle; committed real Kraken/OKX and synthetic fixtures keep Python out of CI and the image.

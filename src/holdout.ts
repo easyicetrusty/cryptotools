@@ -1,7 +1,7 @@
 import type {DatabaseSync} from 'node:sqlite';
 import {hash} from './market-rules.js';
 export type Window={exchange:string,symbol:string,timeframe:string,start:number,end:number};
-const overlap=(a:Window,b:Window)=>a.exchange===b.exchange&&a.symbol===b.symbol&&a.timeframe===b.timeframe&&a.start<b.end&&a.end>b.start;
+const overlap=(a:Window,b:Window)=>a.exchange===b.exchange&&a.symbol===b.symbol&&a.start<b.end&&a.end>b.start;
 export class Holdouts{
  constructor(private db:DatabaseSync,private require:(source:string)=>void){db.exec(`CREATE TABLE IF NOT EXISTS holdouts(id INTEGER PRIMARY KEY,identity TEXT UNIQUE NOT NULL,config TEXT NOT NULL,tuning_id INTEGER NOT NULL,sealed_id INTEGER,state TEXT NOT NULL,seen INTEGER NOT NULL,created TEXT NOT NULL,unsealed TEXT); CREATE TABLE IF NOT EXISTS inspected_windows(id INTEGER PRIMARY KEY,config TEXT NOT NULL,inspected TEXT NOT NULL)`);}
  private row(id:number){if(!Number.isSafeInteger(id)||id<1)throw Error('Invalid experiment');const r=this.db.prepare('SELECT * FROM holdouts WHERE id=?').get(id) as any;if(!r)throw Error('Experiment unavailable');this.require(JSON.parse(r.config).exchange);return r;}
