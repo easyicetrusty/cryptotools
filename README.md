@@ -16,38 +16,55 @@ Licence: GNU Affero General Public License v3.0 (AGPL-3.0). See [LICENSE](LICENS
 
 The assistant is instructed to return neutral data rather than recommendations. Model prose remains untrusted. Code limits its tools to public data, backtests and paper holdings; a prompt is not a security boundary.
 
-## Install from this checkout
+## Install
 
-Prerequisites: Git, Docker Engine or Docker Desktop, and Docker Compose v2. Windows requires Linux containers. Clone the repository and enter its directory first:
+Prerequisites: Docker Engine or Docker Desktop running with Docker Compose v2, Internet access and a free local port 8080. Windows requires Linux containers. No Git checkout, Node installation or registry login is needed. Images are published for **linux/amd64 and linux/arm64**.
 
-```sh
-git clone https://github.com/easyicetrusty/cryptotools.git
-cd cryptotools
-```
+**Read the script first**: [shell installer](install.sh) or [PowerShell installer](install.ps1). These commands download and execute code; review it before running. The installer downloads the versioned Compose file into `$HOME/.cryptotools`, pulls `ghcr.io/easyicetrusty/cryptotools:latest` and starts it.
 
-While the repository is private, cloning requires granted access. There is no published registry image yet. The commands below build a local **linux/amd64** image, then install with one command. Apple Silicon uses amd64 emulation here; a current native ARM release is pending.
-
-Linux or macOS (Docker must be running and usable by your account):
+Linux or macOS (Docker must be usable by your account):
 
 ```sh
-docker build --platform linux/amd64 -t cryptotools:0.2.0-amd64 . && CRYPTOTOOLS_IMAGE=cryptotools:0.2.0-amd64 LOCAL_IMAGE=1 sh ./install.sh
+curl -fsSL https://raw.githubusercontent.com/easyicetrusty/cryptotools/main/install.sh | sh
 ```
 
-Windows PowerShell, from the checkout:
+Windows PowerShell:
 
 ```powershell
-docker build --platform linux/amd64 -t cryptotools:0.2.0-amd64 .; if ($LASTEXITCODE -eq 0) { ./install.ps1 -Image cryptotools:0.2.0-amd64 -LocalImage }
+irm https://raw.githubusercontent.com/easyicetrusty/cryptotools/main/install.ps1 | iex
 ```
 
-Open http://127.0.0.1:8080 on the Docker host. Create a password of at least 12 characters and complete onboarding. No AI key is needed for the test bench or paper portfolio. The installer opens a browser when possible; `OPEN_BROWSER=0` or `-NoBrowser` disables that.
+Open http://127.0.0.1:8080 on the Docker host. Create a password of at least 12 characters and complete onboarding. No AI key is needed for the test bench or paper portfolio. The installer opens a browser when possible; set `OPEN_BROWSER=0` (shell) or download the PowerShell script and use `-NoBrowser` to disable that.
+
+### Update and stop
+
+Updates pull the image and recreate both services, retaining the `cryptotools_app-data` and `cryptotools_feedback-data` named volumes. Back up both volumes before updating. There is no automatic updater or database recovery UI.
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/easyicetrusty/cryptotools/main/install.sh | sh -s -- update
+```
+
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/easyicetrusty/cryptotools/main/install.ps1))) -Update
+```
 
 The app binds to loopback. It is not approved for public hosting. Stop without deleting your data:
 
 ```sh
-docker compose down
+docker compose -f "$HOME/.cryptotools/compose.yaml" down
 ```
 
-Do not use `docker compose down -v` unless you deliberately want to delete the data volumes. Rebuild the image from reviewed source before updating, then rerun the install command. There is no automatic updater or database recovery UI.
+PowerShell: `docker compose -f "$HOME/.cryptotools/compose.yaml" down`. Never use `down -v` unless you deliberately want to delete the data volumes.
+
+### Manual Docker Compose alternative
+
+Download and review [compose.yaml](compose.yaml), then run from its directory:
+
+```sh
+docker compose pull && docker compose up -d --wait --wait-timeout 180
+```
+
+To pin a release instead of `latest`, set `CRYPTOTOOLS_IMAGE=ghcr.io/easyicetrusty/cryptotools:0.3.0` (PowerShell: `$env:CRYPTOTOOLS_IMAGE = 'ghcr.io/easyicetrusty/cryptotools:0.3.0'`). `APP_PORT` overrides port 8080 and `CRYPTOTOOLS_DIR` overrides the install directory. Repeat any overrides when updating or stopping. The Compose project name and volume names stay `cryptotools`; changing the install directory does not create a separate instance.
 
 ## Where data goes
 
@@ -82,7 +99,7 @@ npm ci && npm test
 
 `npm test` builds TypeScript and the frontend before running unit tests. The prepared revision passed 21 unit tests and a linux/amd64 Docker build in a Linux VM. Previous focused browser checks covered both themes at 390 and 1440 pixels, real public candles and mocked provider protocols.
 
-**Native Windows and macOS installation are not yet verified.** PowerShell-on-Linux testing is not Windows testing. The current fix has not been rebuilt or tested on native ARM. Real hosted AI credentials have not been validated; provider support describes implemented configurations, not a compatibility guarantee.
+**Native Windows and macOS installation are not yet verified.** PowerShell-on-Linux testing is not Windows testing. The arm64 release is checked under QEMU on Linux, not on native ARM hardware. Real hosted AI credentials have not been validated; provider support describes implemented configurations, not a compatibility guarantee.
 
 Browser integration scripts in `tests/` require disposable databases and the fixture services they name. Synthetic candles and fake provider credentials are test fixtures, not public market data or usable API keys. Unknown historical candle provenance is labelled synthetic conservatively. See [PROVENANCE.md](PROVENANCE.md).
 
