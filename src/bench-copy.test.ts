@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {constraintStatus} from './bench-copy.js';
+test('Legacy results disclose unavailable constraints rather than claiming a snapshot',()=>{assert.match(constraintStatus(),/Legacy constraints unavailable/);assert.match(constraintStatus({rules:null}),/feasibility unverified/);assert.ok(!constraintStatus().includes('Snapshot constraints available'));});
+test('Current result constraint copy distinguishes unknown fields from captured bounds',()=>{assert.equal(constraintStatus({rules:{},unknownConstraints:['minCost']}),'Unverified constraints: minCost');assert.equal(constraintStatus({rules:{},unknownConstraints:[]}),'Snapshot constraints available.');});

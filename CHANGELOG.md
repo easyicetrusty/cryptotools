@@ -1,5 +1,9 @@
 # What’s new
 
+## 0.7.0-beta.2 · Correct legacy constraints disclosure
+- Legacy saved results explicitly state that constraints are unavailable, rather than falling through to a current-snapshot availability message. Two regression fixtures and the real upgrade/browser check cover this disclosure.
+- New prerelease revision; the published v0.7.0 tag is preserved. The execution model and costs are unchanged. Saved v0.7.0 bundles replay with an app-version difference rather than a false identical claim after upgrade.
+
 ## 0.7.0 · Honest test bench
 - Dated, hashed public ccxt market-rule snapshots, exchange precision rounding, minimum/bound rejections and retained residual cash/dust. Skipped attempts are counted rather than silently filled; unknown constraints remain unverified.
 - Taker fee defaults with source/date and explicit overrides; independent BTC rules/fees. The captured current Kraken general-spot schedule replaces stale ccxt defaults on identified BTC/ETH/SOL-base pairs, with both values retained.

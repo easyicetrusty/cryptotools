@@ -1,0 +1,1 @@
+export function constraintStatus(model?:{rules?:unknown,unknownConstraints?:string[]}){if(!model?.rules)return 'Legacy constraints unavailable; exchange feasibility unverified.';return model.unknownConstraints?.length?'Unverified constraints: '+model.unknownConstraints.join(', '):'Snapshot constraints available.';}

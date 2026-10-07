@@ -14,7 +14,7 @@ mkdir -p "$CRYPTOTOOLS_DIR"
 config="$CRYPTOTOOLS_DIR/compose.yaml"
 tmp=$(mktemp "$CRYPTOTOOLS_DIR/compose.yaml.XXXXXX")
 trap 'rm -f "$tmp"' EXIT HUP INT TERM
-curl -fsSL https://raw.githubusercontent.com/easyicetrusty/cryptotools/v0.7.0/compose.yaml -o "$tmp"
+curl -fsSL https://raw.githubusercontent.com/easyicetrusty/cryptotools/v0.7.0-beta.2/compose.yaml -o "$tmp"
 mv "$tmp" "$config"
 if [ "${LOCAL_IMAGE:-0}" = 1 ]; then
   docker image inspect "$CRYPTOTOOLS_IMAGE" >/dev/null
