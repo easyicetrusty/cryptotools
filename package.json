@@ -10,7 +10,7 @@
     "build": "tsc && vite build",
     "start": "node dist/server.js",
     "feedback": "node dist/feedback.js",
-    "test": "node --test dist/*.test.js"
+    "test": "npm run build && node --test dist/*.test.js"
   },
   "dependencies": {
     "@fastify/static": "10.1.5",

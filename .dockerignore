@@ -17,3 +17,18 @@ test-scan-home/
 ollama-data/
 *.sqlite*
 *.secret
+
+# Local credentials, databases and archives must never enter source or images.
+.env
+.env.*
+buddy.txt
+*.db
+*.pem
+*.key
+*.token
+tokens.json
+*.zip
+evidence-fix1/
+fix1-real-data/
+fix1-synthetic-data/
+docs/screenshots/

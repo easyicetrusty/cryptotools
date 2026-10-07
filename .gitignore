@@ -17,3 +17,14 @@ ollama-data/
 evidence-fix1/
 fix1-real-data/
 fix1-synthetic-data/
+
+# Local credentials, databases and archives must never enter source or images.
+.env
+.env.*
+buddy.txt
+*.db
+*.pem
+*.key
+*.token
+tokens.json
+*.zip
