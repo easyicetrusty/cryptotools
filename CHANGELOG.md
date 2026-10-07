@@ -1,5 +1,13 @@
 # What’s new
 
+## 0.7.4 · Security fixes (unreleased candidate)
+- Block outgoing feedback/AI text containing any app-held provider/source/channel/TOTP/master secret. Decrypt only for comparison; broaden common-key/JWT/PEM patterns. Visible refusal, never silent redaction.
+- Resolve and pin SMTP/custom-AI addresses at connect time. Default deny non-public addresses; warned local/private SMTP and loopback-only Ollama settings default off and are disabled in sandbox. TLS remains enforced.
+- Generate digest-pinned release installer/Compose assets plus SHA256SUMS; verify assets, persist .env pin, and resolve newest release on update. Manual :latest remains available. Source installers are fail-closed templates.
+- Intended sandbox/tool/permission refusals reach the UI; unknown vendor exceptions remain generic.
+- Persistent 30-minute idle and 8-hour absolute session expiry; logout revokes server-side and enabling TOTP rotates sessions. Upgrade signs existing sessions out.
+- Candidate only. Independent review comes before tagging or publishing. [Details and deployment notes](docs/SECURITY.md).
+
 ## 0.7.3-beta.1 · Detectable privacy update
 - Same pending-portfolio privacy correction as v0.7.2-beta.2, with a higher patch number so original v0.7.2 installations detect the update under the existing version comparator. Added a package-version assertion preventing a corrective release from sorting below v0.7.2.
 - Both earlier tags/images retained, not rewritten.

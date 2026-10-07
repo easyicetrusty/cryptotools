@@ -1,4 +1,5 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {createServer} from 'node:http';import {DatabaseSync} from 'node:sqlite';import {readFileSync} from 'node:fs';import {chat} from './ai.js';import {Staking} from './staking.js';
+import test from 'node:test';import assert from 'node:assert/strict';import {createServer} from 'node:http';import {DatabaseSync} from 'node:sqlite';import {readFileSync} from 'node:fs';import {chat as realChat,type Provider} from './ai.js';
+const chat=(config:Provider,prompt:string,tool:(name:string,args:any)=>Promise<any>)=>realChat({...config,request:(url,headers,body)=>fetch(url,{method:'POST',headers,body:JSON.stringify(body),redirect:'error'})},prompt,tool);import {Staking} from './staking.js';
 const recorded=JSON.parse(readFileSync('tests/fixtures/lido-sma-recorded-2026-10-07.json','utf8'));
 for(const native of [false,true])test((native?'Anthropic':'Compatible')+' staking tool roundtrip preserves filters, source timestamps and neutral output',async()=>{
  const db=new DatabaseSync(':memory:'),staking=new Staking(db,async()=>new Response(JSON.stringify(recorded.response)),()=>Date.parse(recorded.capturedAt),{enabled:id=>id==='lido',require:()=>{},list:()=>[],fetchData:async()=>recorded.response}),requests:any[]=[];

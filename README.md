@@ -38,32 +38,47 @@ For a hosted tester sandbox, set `CRYPTOTOOLS_SANDBOX=1` before starting Compose
 
 Prerequisites: Docker Engine or Docker Desktop running with Docker Compose v2, Internet access and a free local port 8080. Windows requires Linux containers. No Git checkout, Node installation or registry login is needed. Images are published for **linux/amd64 and linux/arm64**.
 
-**Read the script first**: [shell installer](install.sh) or [PowerShell installer](install.ps1). These commands download and execute code; review it before running. The installer downloads the versioned Compose file into `$HOME/.cryptotools`, pulls `ghcr.io/easyicetrusty/cryptotools:latest` and starts it.
+**Read the release script first**: [shell release asset](https://github.com/easyicetrusty/cryptotools/releases/latest/download/install.sh) or [PowerShell release asset](https://github.com/easyicetrusty/cryptotools/releases/latest/download/install.ps1). These commands execute code. Prefer checksum verification below. Each release installer embeds the release's multi-architecture image digest, verifies its Compose/image-reference assets, and retains the pin in `$HOME/.cryptotools/.env`. Source-tree installers are templates and refuse installation.
 
 Linux or macOS (Docker must be usable by your account):
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/easyicetrusty/cryptotools/main/install.sh | sh
+curl -fsSL https://github.com/easyicetrusty/cryptotools/releases/latest/download/install.sh | sh
 ```
 
 Windows PowerShell:
 
 ```powershell
-irm https://raw.githubusercontent.com/easyicetrusty/cryptotools/main/install.ps1 | iex
+irm https://github.com/easyicetrusty/cryptotools/releases/latest/download/install.ps1 | iex
 ```
 
 Open http://127.0.0.1:8080 on the Docker host. Create a password of at least 12 characters and complete onboarding. No AI key is needed for the test bench or paper portfolio. The installer opens a browser when possible; set `OPEN_BROWSER=0` (shell) or download the PowerShell script and use `-NoBrowser` to disable that.
 
+### Verify before running
+
+Choose a named release from the Releases page and download its `install.sh`, `install.ps1`, `compose.yaml`, `image-reference.txt` and `SHA256SUMS` assets into one directory. On Linux run `sha256sum -c SHA256SUMS`; on macOS run `shasum -a 256 -c SHA256SUMS`. Every file must say OK. Read the installer, then run `sh ./install.sh`.
+
+PowerShell verification before `./install.ps1`:
+
+```powershell
+Get-Content ./SHA256SUMS | ForEach-Object {
+  $hash, $file = $_ -split '  ', 2
+  if ((Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $hash) { throw "Checksum failed: $file" }
+}
+```
+
+Checksums detect corruption or mismatched assets, not a compromised release account. Verify the release source, digest and image provenance separately when needed. The v0.7.4 asset workflow is a candidate until independently reviewed and published; older releases may lack these assets.
+
 ### Update and stop
 
-Updates pull the image and recreate both services, retaining the `cryptotools_app-data` and `cryptotools_feedback-data` named volumes. Back up both volumes before updating. There is no automatic updater or database recovery UI.
+Update resolves the newest published release (including beta releases), verifies its assets, pins its multi-architecture digest and recreates both services, retaining the `cryptotools_app-data` and `cryptotools_feedback-data` named volumes. Back up both volumes before updating. There is no automatic updater or database recovery UI.
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/easyicetrusty/cryptotools/main/install.sh | sh -s -- update
+curl -fsSL https://github.com/easyicetrusty/cryptotools/releases/latest/download/install.sh | sh -s -- update
 ```
 
 ```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/easyicetrusty/cryptotools/main/install.ps1))) -Update
+& ([scriptblock]::Create((irm https://github.com/easyicetrusty/cryptotools/releases/latest/download/install.ps1))) -Update
 ```
 
 The app binds to loopback. It is not approved for public hosting. Stop without deleting your data:
@@ -91,9 +106,9 @@ Your database, cached candles, paper holdings, backtest/job records and saved se
 There are important exceptions:
 
 - Only enabled sources are contacted over the Internet from your installation. Staking snapshots have a 15-minute persisted refresh/failure cooldown; user-initiated connection tests may fetch outside it. Retrieval and provider observation times are separate; unavailable observations stay unknown. DefiLlama Pro's key is part of its official request URL but is not returned or logged by the app.
-- If you enable a hosted AI provider, prompts and requested tool data, including paper holdings, go to that provider. Its terms and retention rules apply. Local Ollama avoids a hosted AI provider but requires a reachable model service and explicit endpoint configuration. Inside Docker, `127.0.0.1` refers to the container, not your host.
+- If you enable a hosted AI provider, prompts and requested tool data, including paper holdings, go to that provider. Its terms and retention rules apply. Local Ollama needs the explicit **Allow loopback Ollama endpoint** setting. Only loopback is exempted; sandbox disables it. Inside Docker, loopback means the app container, not your host. See [local deployment and address policy](docs/SECURITY.md).
 - Enabled notifications send only fixed neutral statuses to your own Telegram bot/chat or TLS SMTP server. The destination receives status events and delivery metadata, never dynamic job content. Explicit update checks contact the public GitHub release API; there is no auto-update.
-- Feedback sends version, screen and what you type to the configured feedback service. The default is local. An overridden `FEEDBACK_URL` can be remote. Never paste private material; the free-text filter is incomplete.
+- Feedback sends version, screen and what you type to the configured feedback service. The default is local. An overridden `FEEDBACK_URL` can be remote. Stored credentials and common secret shapes block sending with a visible error; unknown secrets still need your care. Nothing is silently redacted and sent.
 - Optional usage counters send only allowlisted names and counts to the configured feedback service. Opting out stops new counts, not deletion of existing counts.
 
 AI, data-provider and notification credentials and TOTP secrets are encrypted at rest. The default randomly generated master key is stored alongside the database in the app volume. Someone who can read both can decrypt them. Back up both together; losing the master key loses access to saved keys. This is not hardware isolation. Authentication recovery and TOTP disable/reset UI are not implemented; retain your authenticator before enabling 2FA. See [SECURITY.md](SECURITY.md).

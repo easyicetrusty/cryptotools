@@ -12,10 +12,10 @@ Include the affected revision, a description, minimal reproduction steps and imp
 
 ## Prototype boundary
 
-This beta is for local paper research, not live trading or public hosting. Do not expose its app or feedback ports to the Internet. Use reviewed source and maintained Docker releases. Provider endpoints and feedback destinations are user-configured; check where they point before sending anything.
+This beta is for local paper research, not live trading or public hosting. Do not expose its app or feedback ports to the Internet. Use reviewed source and maintained Docker releases. Provider endpoints are user-configured and checked at connect time; feedback destinations are operator-configured. Check where they point before sending anything. SMTP and AI local-address exceptions require explicit settings and are unavailable in sandbox.
 
 Saved provider keys and TOTP secrets use AES-256-GCM encryption. The default random master key and database are both in the local app volume. A reader of both can decrypt them. Passwords use salted scrypt hashes. Neither encryption nor login substitutes for protecting the host and backups.
 
-Optional TOTP lacks recovery and disable/reset UI. Losing an authenticator can lock you out. Hosted AI sends prompts and requested tool data to the selected provider. Model text is untrusted. Feedback text filtering cannot reliably scrub every secret.
+Optional TOTP lacks recovery and disable/reset UI. Losing an authenticator can lock you out. Hosted AI sends prompts and requested tool data to the selected provider. Model text is untrusted. Feedback and outgoing AI text are blocked when an app-held secret or a common secret pattern is detected. Unknown/transformed secrets can still evade filtering: never paste private material. See [v0.7.4 changes and address/session policy](docs/SECURITY.md).
 
 Only the current prepared beta revision is the maintenance target. Production hosting, security hardening, recovery and native-platform validation remain unfinished. This file is not a claim of a completed security review.

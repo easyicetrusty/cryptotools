@@ -2,7 +2,7 @@ FROM --platform=$BUILDPLATFORM node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
-COPY tsconfig.json vite.config.ts CHANGELOG.md ./
+COPY tsconfig.json vite.config.ts CHANGELOG.md release-assets.mjs install.sh install.ps1 compose.yaml ./
 COPY src ./src
 COPY web ./web
 COPY tests/fixtures ./tests/fixtures
