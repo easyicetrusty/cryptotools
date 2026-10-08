@@ -67,7 +67,7 @@ Get-Content ./SHA256SUMS | ForEach-Object {
 }
 ```
 
-Checksums detect corruption or mismatched assets, not a compromised release account. Verify the release source, digest and image provenance separately when needed. The v0.7.4 asset workflow is a candidate until independently reviewed and published; older releases may lack these assets.
+Checksums detect corruption or mismatched assets, not a compromised release account. Verify the release source, digest and image provenance separately when needed. Older releases may lack these assets.
 
 ### Update and stop
 
