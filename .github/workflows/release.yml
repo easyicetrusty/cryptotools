@@ -50,6 +50,8 @@ jobs:
             ghcr.io/easyicetrusty/cryptotools:latest
           labels: |
             org.opencontainers.image.source=https://github.com/easyicetrusty/cryptotools
+            org.opencontainers.image.authors=easyicetrusty
+            org.opencontainers.image.vendor=easyicetrusty
             org.opencontainers.image.licenses=AGPL-3.0
             org.opencontainers.image.version=${{ steps.version.outputs.version }}
             org.opencontainers.image.revision=${{ github.sha }}
