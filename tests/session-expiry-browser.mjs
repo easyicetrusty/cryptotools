@@ -15,12 +15,27 @@ try{
  // No traffic leaves the machine: external pages (provider terms) are answered locally.
  await context.route(url=>!url.href.startsWith(base),route=>route.fulfill({status:200,contentType:'text/html',body:'<title>external stub</title>'}));
  const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ // Delay real successful API responses, never replace them with static fixture/shell responses.
+ const delays=new Map(),delayed=[];
+ await page.route(base+'/api/**',async route=>{const path=new URL(route.request().url()).pathname,ms=delays.get(path);if(!ms)return route.continue();
+  const response=await route.fetch();if(response.status()===200){const start=Date.now();await new Promise(r=>setTimeout(r,ms+25));delayed.push({path,status:200,delayMs:Date.now()-start});}await route.fulfill({response});});
  await page.goto(base);await page.getByRole('heading',{name:'Start with a password.'}).waitFor();
  assert.equal((await page.request.post(base+'/api/auth/setup',{data:{password}})).status(),200);
  assert.equal((await page.request.post(base+'/api/settings',{data:{onboarded:true}})).status(),200);
  assert.equal((await page.request.post(base+'/api/sources/kraken',{data:{enabled:true,accepted:true}})).status(),200);
  assert.equal((await page.request.post(base+'/api/settings',{data:{survey:true}})).status(),200);
  assert.equal((await page.request.post(base+'/api/portfolio',{data:{symbol:'BTC/USDT',quantity:0.1,cost:80000}})).status(),200);
+ // Seed disposable SQLite rows; the normal server routes/authentication must return them to the browser.
+ // No real provider key or AI request is needed to exercise budgets, saved-model defaults or job history.
+ {const db=new DatabaseSync(data),stamp=new Date().toISOString();
+  db.prepare('INSERT INTO providers(id,model,base_url,key_cipher) VALUES(?,?,?,NULL)').run('mistral','seeded-saved-model','');
+  db.prepare('INSERT OR REPLACE INTO ai_controls VALUES(?,?,?,?)').run('mistral',123456,9,0);
+  db.prepare('INSERT INTO ai_debits(provider,day,at,tokens,estimate) VALUES(?,?,?,?,?)').run('mistral',stamp.slice(0,10),Date.now(),321,0);
+  db.prepare('INSERT INTO jobs(id,goal,status,result,created) VALUES(?,?,?,?,?)').run(41,'Seeded API job history 41','interrupted','',stamp);
+  db.prepare('INSERT INTO workers(job,role,provider,model,status,result) VALUES(?,?,?,?,?,?)').run(41,'research','mistral','seeded-saved-model','interrupted','');
+  db.prepare('UPDATE data_sources SET last_status=? WHERE id=?').run('Seeded API source status','okx');
+  const row={exchange:'kraken',symbol:'ETH/USDT',base:'ETH',quote:'USDT',asset:'ETH',volumeUsd:1234567,approximate:true,observedAt:stamp,fetchedAt:stamp,history:[]};
+  db.prepare('INSERT OR REPLACE INTO trend_cache VALUES(?,?,?)').run('kraken:volumes',JSON.stringify({status:'available',rows:[row],excludedQuote:0,excludedData:0,marketCount:1}),stamp);db.close();}
  await page.reload();const form=page.locator('form:has(input[name=symbol])');await form.waitFor();
  const dialog=page.getByRole('dialog',{name:'Sign in again'});
  const values={symbol:'ETH/USDT',capital:'12345',fast:'7',slow:'31'};
@@ -28,23 +43,39 @@ try{
  const assertKept=async label=>{for(const [k,v] of Object.entries(values))assert.equal(await form.locator(`input[name=${k}]`).inputValue(),v,label+' '+k);assert.equal(await form.locator('select[name=strategy]').inputValue(),'rsi',label+' strategy');};
  // Loaded content per screen, read from the DOM. Each needs data the screen fetches when it opens.
  const probes={
-  'Trends':()=>/Reading enabled public sources|Snapshot captured/.test(document.querySelector('section[aria-label="Trends information"] p[role=status]')?.textContent??'')||!!document.querySelector('.trend-results'),
+  'Trends':()=>/^Snapshot captured /.test(document.querySelector('section[aria-label="Trends information"] p[role=status]')?.textContent??'')&&[...document.querySelectorAll('.trend-volume-table tbody tr')].some(r=>/ETH\/USDT/.test(r.textContent)&&r.textContent.includes('1,234,567')),
   'Test bench':()=>!!document.querySelector('main form input[name=symbol]')&&[...document.querySelectorAll('.saved-run-list button')].some(b=>/^Open run #\d+/.test(b.textContent)),
   'Portfolio':()=>[...document.querySelectorAll('.portfolio-table tbody tr')].some(r=>r.textContent.includes('BTC/USDT'))&&/Add a paper holding to begin|quote · observed values/.test(document.querySelector('.portfolio-history')?.textContent??''),
   'Staking':()=>/\d+ shown · \d+ matched of \d+ options/.test(document.querySelector('section[aria-label="Staking information"]')?.textContent??''),
-  'Assistant':()=>!!document.querySelector('main textarea[name=prompt]')&&!!document.querySelector('.usage-meters'),
-  'Workers':()=>!!document.querySelector('main textarea[name=goal]')&&document.querySelectorAll('.worker-grid select').length===4,
-  'Data sources':()=>document.querySelectorAll('main .source-card').length>=5,
+  'Assistant':()=>{const b=document.querySelector('[data-budget-provider="mistral"]');return !!b&&b.textContent.includes('321 / 123,456 budgeted tokens')&&b.textContent.includes('/ 9 requests in the last minute')},
+  'Workers':()=>[...document.querySelectorAll('article.job')].some(j=>j.querySelector('h3')?.textContent==='Job #41'&&j.textContent.includes('Seeded API job history 41')&&j.textContent.includes('interrupted')&&j.textContent.includes('seeded-saved-model')),
+  'Data sources':()=>document.querySelector('[data-source="okx"]')?.textContent.includes('Seeded API source status')===true,
   'Settings':()=>document.querySelectorAll('.channel-form').length===2&&!!document.querySelector('.ai-controls'),
   'What’s new':()=>/0\.7\.5/.test(document.querySelector('pre.changelog')?.textContent??'')};
  // Screens whose content is fetched by components mounted on open (What’s new keeps its text in app state).
- const loadsOnOpen=['Trends','Test bench','Portfolio','Staking','Data sources','Settings'];
+ const loadsOnOpen=['Trends','Test bench','Portfolio','Staking','Assistant','Workers','Data sources','Settings'];
  // Failed loads show their message in alert, status or error elements; none may still say Login required.
  const noLoginRequired=()=>![...document.querySelectorAll('main [role=alert],main [role=status],main .error')].some(n=>/Login required/i.test(n.textContent));
  // Polls the open page; never navigates, so a failed load cannot be hidden by a remount.
  const loaded=async(name,timeout=20000)=>{await page.waitForFunction(([fn])=>(0,eval)(fn)(),[probes[name].toString()],{timeout});await page.waitForFunction(noLoginRequired,null,{timeout:5000});};
  const probe=name=>page.evaluate(([fn])=>(0,eval)(fn)(),[probes[name].toString()]);
  const signInDialog=async()=>{await dialog.getByLabel('Password').fill(password);await dialog.getByRole('button',{name:'Sign in and continue'}).click();await dialog.waitFor({state:'detached'});};
+
+ // Slow Settings initializer: multiple saved forms must all return, not just the first matching form.
+ await page.getByRole('button',{name:'Settings',exact:true}).click();await loaded('Settings');
+ await page.locator('input[name=chatId]').fill('987654321');await page.getByLabel('Enable telegram notifications',{exact:true}).check();
+ await page.getByLabel('mistral daily token cap',{exact:true}).fill('98765');
+ await page.waitForLoadState('networkidle');expire();await page.reload();await page.getByRole('heading',{name:'Welcome back.'}).waitFor();
+ delays.set('/api/notifications',2400);delays.set('/api/providers',600);
+ await page.getByLabel('Password').fill(password);await page.getByRole('button',{name:'Log in'}).click();
+ await page.getByText('Signed in again. Your form is as you left it.',{exact:true}).waitFor({timeout:15000});
+ assert.equal(await page.locator('nav button[aria-current=page]').innerText(),'Settings');
+ assert.equal(await page.locator('input[name=chatId]').inputValue(),'987654321');assert.equal(await page.getByLabel('Enable telegram notifications',{exact:true}).isChecked(),true);
+ assert.equal(await page.getByLabel('mistral daily token cap',{exact:true}).inputValue(),'98765');
+ assert.ok(delayed.some(d=>d.path==='/api/notifications'&&d.delayMs>=2400));assert.ok(delayed.some(d=>d.path==='/api/providers'&&d.delayMs>=600));
+ await page.locator('.notification-settings').screenshot({path:join(output,'settings-delayed-restored-1440.png')});
+ check('Settings: all saved forms restored after staggered 2400 ms notifications and 600 ms provider responses',{chatId:'987654321',enabled:true,dailyCap:'98765',delayed:[...delayed]});
+ delays.clear();await page.getByRole('button',{name:'Test bench',exact:true}).click();await form.waitFor();
 
  // 1. The tester's case: form open, session expired, "Run backtest" clicked.
  await fill();expire();await form.getByRole('button',{name:'Run backtest'}).click();
@@ -100,13 +131,17 @@ try{
  const workerValues=()=>page.evaluate(()=>({goal:document.querySelector('textarea[name=goal]').value,research:[document.querySelector('[aria-label="research provider"]').value,document.querySelector('[aria-label="research model"]').value],reviewer:[document.querySelector('[aria-label="reviewer provider"]').value,document.querySelector('[aria-label="reviewer model"]').value]}));
  const fillJob=async()=>{await page.locator('textarea[name=goal]').fill(job.goal);for(const role of ['research','reviewer']){await page.getByLabel(role+' provider').selectOption(job[role][0]);await page.getByLabel(role+' model').fill(job[role][1]);}assert.deepEqual(await workerValues(),job);};
  await fillJob();await page.waitForLoadState('networkidle');assert.equal(await dialog.count(),0,'no dialog before expiry');expire();// the 1.5 s job poll may raise the dialog first; then the click cannot land, which is the expected outcome too
- await page.getByRole('button',{name:'Start job'}).click({timeout:1500}).catch(()=>{});await dialog.waitFor({timeout:5000});
+ const [refusedJob]=await Promise.all([page.waitForResponse(r=>new URL(r.url()).pathname==='/api/jobs'&&r.request().method()==='POST'),page.evaluate(()=>document.querySelector('form:has(textarea[name=goal])').requestSubmit())]);
+ assert.equal(refusedJob.status(),401,'Start job must reach the API and be refused before sign-in');await dialog.waitFor({timeout:5000});
  await signInDialog();await loaded('Workers');assert.deepEqual(await workerValues(),job,'after dialog sign-in');
- expire();await page.reload();await page.getByRole('heading',{name:'Welcome back.'}).waitFor();await page.getByLabel('Password').fill(password);await page.getByRole('button',{name:'Log in'}).click();
- await page.waitForFunction(v=>document.querySelector('[aria-label="reviewer model"]')?.value===v,job.reviewer[1],{timeout:5000});await page.waitForTimeout(300);
+ expire();await page.reload();await page.getByRole('heading',{name:'Welcome back.'}).waitFor();delays.set('/api/providers',1200);delays.set('/api/jobs',2400);const workerDelayStart=delayed.length;
+ await page.getByLabel('Password').fill(password);await page.getByRole('button',{name:'Log in'}).click();
+ await page.getByText('Signed in again. Your form is as you left it.',{exact:true}).waitFor({timeout:15000});
+ assert.ok(delayed.slice(workerDelayStart).some(d=>d.path==='/api/providers'&&d.delayMs>=1200));
+ assert.ok(delayed.slice(workerDelayStart).some(d=>d.path==='/api/jobs'&&d.delayMs>=2400),'restore must not finish before worker data loads');delays.clear();
  assert.equal(await page.locator('nav button[aria-current=page]').innerText(),'Workers');assert.deepEqual(await workerValues(),job,'after reload and sign-in');await loaded('Workers');
- await page.screenshot({path:join(output,'workers-restored-1440.png')});
- check('Workers form: goal and the unnamed provider and model controls are kept after dialog sign-in and restored after a reload',{...job,screenshot:'workers-restored-1440.png'});
+ await page.locator('form:has(textarea[name=goal])').screenshot({path:join(output,'workers-restored-1440.png')});
+ check('Workers form: goal and provider/model controls restored after delayed provider (1200 ms) and jobs (2400 ms) responses',{...job,delayed:delayed.slice(workerDelayStart),screenshot:'workers-restored-1440.png'});
 
  // 7. Assistant form: provider select and unnamed model input restored after a reload.
  await page.getByRole('button',{name:'Assistant',exact:true}).click();await loaded('Assistant');

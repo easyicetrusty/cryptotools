@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect,useState,useCallback} from 'react';
 // Expired sessions never fail silently: any API 401 raises 'session-expired' so the app can ask for sign-in over the
 // current page. Screen and non-secret form fields are kept in this tab so a reload plus sign-in returns to them.
 const returnKey='cryptotools-return',secret=/pass|key|secret|token|code/i,restoredEvent='session-restored';
@@ -10,6 +10,12 @@ export function guardFetch(){
 // After sign-in from the dialog every mounted screen reloads its own data; entered values stay because nothing remounts.
 export const sessionRestored=()=>window.dispatchEvent(new Event(restoredEvent));
 export function useSessionRestored(reload:()=>void){useEffect(()=>{window.addEventListener(restoredEvent,reload);return ()=>window.removeEventListener(restoredEvent,reload)});}
+// Form restoration waits for completed data loads, not an assumed network latency. Counts concurrent loads too.
+export function useFormLoading(){
+ const [count,C]=useState(0);
+ const load=useCallback(async<T,>(fn:()=>Promise<T>):Promise<T>=>{C(n=>n+1);try{return await fn()}finally{C(n=>n-1)}},[]);
+ return [count>0,load] as const;
+}
 // A message left by the expired session is cleared on restore; any other message stays.
 export const clearExpired=(message:string)=>/Login required/.test(message)?'':message;
 type Field=[string,string|boolean];type Saved={screen:string,forms:{shape:string,fields:Field[]}[]};
@@ -37,7 +43,26 @@ export function restoreForms(saved:Saved['forms']){
   const controls=new Map(fieldsOf(form));for(const [key,value] of saved[i].fields){const el=controls.get(key);if(!el)continue;const before=typeof value==='boolean'?el.checked:el.value;setControl(el,value);if(before!==value)changed++;}}
  return changed;
 }
-export const formsMatch=(saved:Saved['forms'])=>[...document.querySelectorAll<HTMLFormElement>('main form')].some(f=>saved.some(s=>s.shape===shapeOf(f)));
+export function formsMatch(saved:Saved['forms']){
+ const forms=[...document.querySelectorAll<HTMLFormElement>('main form')],used=new Set<number>();
+ return saved.every(s=>{const i=forms.findIndex((f,j)=>!used.has(j)&&s.shape===shapeOf(f));if(i<0)return false;used.add(i);
+  const controls=new Map(fieldsOf(forms[i]));return s.fields.every(([key,value])=>{const el=controls.get(key);return el&&(typeof value==='boolean'?el.checked:el.value)===value});});
+}
+// Keep the whole snapshot pending until every saved form exists, all async initializers have finished, and every
+// value matches after React has processed the restore events (including provider -> model changes). No time window.
+export function restoreWhenReady(saved:Saved['forms'],done:()=>void){
+ const root=document.querySelector('main');if(!root)return ()=>{};
+ let frame=0,stopped=false;
+ const schedule=()=>{if(!frame&&!stopped)frame=requestAnimationFrame(pass)};
+ const observer=new MutationObserver(schedule);
+ const pass=()=>{frame=0;if(root.matches('[data-forms-loading="true"]')||root.querySelector('[data-forms-loading="true"]'))return;
+  const changed=restoreForms(saved);
+  if(!changed&&formsMatch(saved)){stopped=true;observer.disconnect();done();return;}
+  if(changed)schedule();
+ };
+ observer.observe(root,{subtree:true,childList:true,attributes:true});schedule();
+ return ()=>{stopped=true;observer.disconnect();cancelAnimationFrame(frame)};
+}
 // CSV links are plain downloads; check the session first so a logged-out click opens sign-in instead of saving an error file.
 export async function guardedDownload(e:{preventDefault():void,currentTarget:HTMLAnchorElement}){
  e.preventDefault();const href=e.currentTarget.href;const r=await fetch('/api/settings');if(!r.ok)return;const a=document.createElement('a');a.href=href;a.download='';document.body.append(a);a.click();a.remove();
