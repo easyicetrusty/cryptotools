@@ -14,6 +14,8 @@ Include the affected revision, a description, minimal reproduction steps and imp
 
 This beta is for local paper research, not live trading or public hosting. Do not expose its app or feedback ports to the Internet. Use reviewed source and maintained Docker releases. Provider endpoints are user-configured and checked at connect time; feedback destinations are operator-configured. Check where they point before sending anything. SMTP and AI local-address exceptions require explicit settings and are unavailable in sandbox.
 
+The app answers only to the Host names `127.0.0.1`, `localhost` and `[::1]` and to hosts listed in `APP_ALLOWED_HOSTS` (comma list); any other Host header gets 421 before any route runs. This stops a web page that resolves its own domain to 127.0.0.1 (DNS rebinding) from reaching the API. State-changing requests also need a matching Origin when one is sent.
+
 Saved provider keys and TOTP secrets use AES-256-GCM encryption. The default random master key and database are both in the local app volume. A reader of both can decrypt them. Passwords use salted scrypt hashes. Neither encryption nor login substitutes for protecting the host and backups.
 
 Optional TOTP lacks recovery and disable/reset UI. Losing an authenticator can lock you out. Hosted AI sends prompts and requested tool data to the selected provider. Model text is untrusted. Feedback and outgoing AI text are blocked when an app-held secret or a common secret pattern is detected. Unknown/transformed secrets can still evade filtering: never paste private material. See [v0.7.4 changes and address/session policy](docs/SECURITY.md).

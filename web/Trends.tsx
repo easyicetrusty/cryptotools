@@ -1,5 +1,5 @@
 import React,{useEffect,useState} from 'react';
-import {SourceEmpty} from './DataSources.js';
+import {SourceEmpty} from './DataSources.js';import {useSessionRestored} from './session.js';
 import {flowExplanation,washNotice,quoteNotice,trendDefinitions} from '../src/trend-copy.js';
 // Copy stays in sync without importing the server connector graph into the browser.
 const metricNames={leaders:'Volume leaders',surges:'Volume surges',flow:'Aggressor flow',listings:'New listings',futures:'Futures positioning'};
@@ -9,7 +9,10 @@ function Stamp({source}:any){return <small><a href={source.sourceUrl} target="_b
 function exchangeBreakdown(rows:any[]){const groups=new Map<string,any>();for(const row of rows){const old=groups.get(row.exchange);if(old){old.volumeUsd+=row.volumeUsd;old.approximate||=row.approximate;old.markets.push(row)}else groups.set(row.exchange,{...row,markets:[row]})}return [...groups.values()]}
 function Bench({row,onBench}:any){return <button onClick={()=>onBench({exchange:row.exchange,symbol:row.symbol})}>Test in bench · past behaviour</button>}
 export function TrendsScreen({sourceData,onBench}:any){const enabled=sourceData.sources.filter((s:any)=>s.exchange&&!s.key&&s.enabled),[metric,M]=useState<keyof typeof metricNames>('leaders'),[data,D]=useState<any>(null),[busy,B]=useState(false),[error,E]=useState(''),[n,N]=useState(50),[stablePairs,SP]=useState(true),[stableBase,SB]=useState(false),[ready,Ready]=useState(false),[exchange,X]=useState(enabled[0]?.id??''),[symbol,S]=useState('BTC/USDT'),[window,W]=useState('1h'),[refresh,R]=useState(0),[tick,T]=useState(Date.now()),[leaderLimit,LL]=useState(5),[surgeLimit,SL]=useState(10);
- useEffect(()=>{let active=true;fetch('/api/trends/view').then(r=>{if(!r.ok)throw Error('Saved controls unavailable');return r.json()}).then(v=>{if(active){N(v.topN);SP(v.excludeStablePairs);SB(v.excludeStableBase);Ready(true)}}).catch(()=>{if(active)E('Saved controls unavailable. Reload to retry.')});return ()=>{active=false}},[]);
+ const loadView=()=>{let active=true;fetch('/api/trends/view').then(r=>{if(!r.ok)throw Error('Saved controls unavailable');return r.json()}).then(v=>{if(active){N(v.topN);SP(v.excludeStablePairs);SB(v.excludeStableBase);E('');Ready(true)}}).catch(()=>{if(active)E('Saved controls unavailable. Reload to retry.')});return ()=>{active=false}};
+ useEffect(loadView,[]);
+ // After sign-in from the dialog: load the saved controls if they failed, else read the snapshot again (and retry a failed save).
+ useSessionRestored(()=>{if(!ready){loadView();return}if(error==='Controls changed but could not be saved.')void save({});R(n=>n+1)});
  useEffect(()=>{if(enabled.length&&!enabled.some((s:any)=>s.id===exchange)){X(enabled[0].id);if(enabled[0].id==='coinbase')S('BTC/USD')}},[sourceData]);
  useEffect(()=>{const id=setInterval(()=>T(Date.now()),30000);return ()=>clearInterval(id)},[]);
  const sourceKey=enabled.map((s:any)=>s.id).join(',');

@@ -10,6 +10,7 @@ services:
       MASTER_SECRET_FILE: /data/master.secret
       SECURE_COOKIE: ${SECURE_COOKIE:-0}
       CRYPTOTOOLS_SANDBOX: ${CRYPTOTOOLS_SANDBOX:-0}
+      APP_ALLOWED_HOSTS: ${APP_ALLOWED_HOSTS:-}
     volumes: ["app-data:/data"]
     depends_on:
       feedback:
