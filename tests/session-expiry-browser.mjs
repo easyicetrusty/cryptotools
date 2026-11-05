@@ -29,7 +29,7 @@ try{
   const row={exchange:'kraken',symbol:'ETH/USDT',base:'ETH',quote:'USDT',asset:'ETH',volumeUsd:1234567,approximate:true,observedAt:stamp,fetchedAt:stamp,history:[]};
   db.prepare('INSERT OR REPLACE INTO trend_cache VALUES(?,?,?)').run('kraken:volumes',JSON.stringify({status:'available',rows:[row],excludedQuote:0,excludedData:0,marketCount:1}),stamp);
  });
- await page.goto(base);await page.getByRole('heading',{name:'Define a test',exact:true}).waitFor();
+ await page.goto(base);await page.getByRole('heading',{name:'Define a test',exact:true}).waitFor();await page.waitForFunction(()=>window.pendingApi===0);assert.equal(await page.locator('select[name=timeframe]').inputValue(),'1d','initial saved-run timeframe');assert.equal(await page.locator('select[name=strategy]').inputValue(),'hold','initial saved-run strategy');
  const dialog=page.getByRole('dialog',{name:'Sign in again'});let navigations=0;page.on('framenavigated',frame=>{if(frame===page.mainFrame())navigations++});
  const probes={
   'Trends':()=>/^Snapshot captured /.test(document.querySelector('section[aria-label="Trends information"] p[role=status]')?.textContent??'')&&[...document.querySelectorAll('.trend-volume-table tbody tr')].some(r=>r.textContent.includes('ETH/USDT')&&r.textContent.includes('1,234,567')),
