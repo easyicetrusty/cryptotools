@@ -32,6 +32,15 @@ try {
         if (-not $blocked) { throw 'Tampered asset accepted' }
         Write-Output 'PASS PowerShell refuses checksum mismatch'
     } finally { [IO.File]::WriteAllBytes((Join-Path $Assets 'compose.yaml'),$original) }
+    $global:Downloads=0
+    function Invoke-WebRequest { param($Uri,$OutFile); $global:Downloads++; Copy-Item (Join-Path $Assets ([uri]$Uri).Segments[-1]) $OutFile }
+    function docker { if ($args[0] -eq 'info') { $global:LASTEXITCODE=1 } else { $global:LASTEXITCODE=0; $global:Calls+=@("$args") } }
+    $before=$global:Calls.Count
+    $blocked=$false
+    try { & (Join-Path $Assets 'install.ps1') -NoBrowser } catch { if ($_.Exception.Message -match 'Docker engine not reachable\. Start Docker Desktop') { $blocked=$true } else { throw } }
+    if (-not $blocked) { throw 'Stopped engine not reported' }
+    if ($global:Downloads -ne 0 -or $global:Calls.Count -ne $before) { throw 'Installer continued after engine check failed' }
+    Write-Output 'PASS PowerShell stops first with a plain message when the Docker engine is not running'
     Write-Output 'Mock Docker calls (no network/registry operations):'
     $global:Calls | Write-Output
 } finally { Remove-Item -Recurse -Force $root -ErrorAction SilentlyContinue }

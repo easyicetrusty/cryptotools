@@ -1,5 +1,13 @@
 # What’s new
 
+## 0.7.5 · Fixes from the first Windows beta test (unreleased candidate)
+- Security: the sign-in check now uses the matched route, not the raw URL. Before, a percent-encoded path such as `/%61pi/portfolio` reached user-data routes without a session. A regression test calls every API route without a session, also in encoded and normalised forms, and expects 401.
+- Expired session: any page or action that meets "Login required" now opens a sign-in dialog over the current page. After sign-in you are where you were, with the values you entered. The clicked action did not run; click it again after signing in. It no longer fails without a message. A reload while signed out returns you to the same screen with the form values restored. CSV and report downloads check the session first instead of saving an error file.
+- Installers check that the Docker engine is reachable before anything else and stop with a plain message: start Docker Desktop (or the docker service), wait until the engine is running, then run the installer again.
+- README: Windows notes separate "install this exact release" (no `-Update`, verify against the same release's SHA256SUMS) from "update to the latest release" (`-Update`).
+- Provider terms and other external links open in a new tab (already true in 0.7.4; now covered by a test).
+- Fixed an unhandled error in AI cost controls when the session had expired.
+
 ## 0.7.4 · Security fixes (unreleased candidate)
 - Block outgoing feedback/AI text containing any app-held provider/source/channel/TOTP/master secret. Decrypt only for comparison; broaden common-key/JWT/PEM patterns. Visible refusal, never silent redaction.
 - Resolve and pin SMTP/custom-AI addresses at connect time. Custom feedback/telemetry overrides also require public HTTPS; only the fixed companion URL is exempt. Default deny non-public addresses; warned local/private SMTP and loopback-only Ollama settings default off and are disabled in sandbox. TLS remains enforced.

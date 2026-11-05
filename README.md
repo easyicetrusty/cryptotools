@@ -59,7 +59,10 @@ Windows notes (from a native Windows 11 test of 0.7.4, 8 October 2026):
 - A message saying nested virtualization is not supported can appear inside a virtual machine. WSL2 and Docker still worked in that test.
 - Docker Desktop may ask you to sign in. It is not required.
 - No SmartScreen warning appears: there is no .exe to run, only a PowerShell script that pulls the container image.
-- If you saved `install.ps1` to disk (for example to check its checksum) and see "running scripts is disabled on this system", run it with `powershell -ExecutionPolicy Bypass -File .\install.ps1 -Update`. This applies to that one run only and does not change your system settings.
+- Start Docker Desktop first and wait until it says the engine is running. From 0.7.5 the installer checks this and stops with a message if the engine is not reachable; start Docker Desktop, wait, then run the installer again.
+- If you saved `install.ps1` to disk and see "running scripts is disabled on this system", use `-ExecutionPolicy Bypass` as below. It applies to that one run only and does not change your system settings. Pick the case that matches what you want:
+  - **Install this exact release** (for example to test a named release): download `install.sh`, `install.ps1`, `compose.yaml`, `image-reference.txt` and `SHA256SUMS` from that same release page into one folder, check them with the PowerShell verification under [Verify before running](#verify-before-running), then run `powershell -ExecutionPolicy Bypass -File .\install.ps1`. Do not add `-Update`: it ignores the release you verified and picks the newest published release when it runs.
+  - **Update to the latest release**: run `powershell -ExecutionPolicy Bypass -File .\install.ps1 -Update`. This looks up the newest published release on GitHub when it runs and verifies that release's own assets, so what gets installed can differ from the file you saved.
 - Paste the one-liner rather than retyping it. On some non-US keyboards a retyped `|` can produce a "positional parameter cannot be found" error.
 
 Open http://127.0.0.1:8080 on the Docker host. Create a password of at least 12 characters and complete onboarding. No AI key is needed for the test bench or paper portfolio. The installer opens a browser when possible; set `OPEN_BROWSER=0` (shell) or download the PowerShell script and use `-NoBrowser` to disable that.
@@ -68,7 +71,7 @@ Open http://127.0.0.1:8080 on the Docker host. Create a password of at least 12 
 
 Choose a named release from the Releases page and download its `install.sh`, `install.ps1`, `compose.yaml`, `image-reference.txt` and `SHA256SUMS` assets into one directory. On Linux run `sha256sum -c SHA256SUMS`; on macOS run `shasum -a 256 -c SHA256SUMS`. Every file must say OK. Read the installer, then run `sh ./install.sh`.
 
-PowerShell verification before `./install.ps1`:
+PowerShell verification before `./install.ps1` (then run it without `-Update`, so it installs exactly the release you verified):
 
 ```powershell
 Get-Content ./SHA256SUMS | ForEach-Object {

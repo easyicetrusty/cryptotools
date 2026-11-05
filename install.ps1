@@ -5,6 +5,16 @@ $ReleaseVersion = '@RELEASE_VERSION@'
 $PinnedImage = 'ghcr.io/easyicetrusty/cryptotools@sha256:@IMAGE_DIGEST@'
 function Assert-Docker { if ($LASTEXITCODE -ne 0) { throw "Docker failed: $LASTEXITCODE" } }
 if (-not (Get-Command docker -ErrorAction SilentlyContinue)) { throw 'Install Docker with Compose v2 first.' }
+# Check the engine before anything else: a stopped Docker Desktop otherwise fails later with a confusing error.
+$engineRunning = $false
+try { docker info *> $null; $engineRunning = ($LASTEXITCODE -eq 0) } catch { $engineRunning = $false }
+# throw, not exit: under "irm | iex" exit would close the window before the message can be read; -File still exits 1.
+if (-not $engineRunning) {
+    Write-Host 'Docker is installed but its engine is not reachable.'
+    Write-Host 'Start Docker Desktop and wait until it says the engine is running (on Linux: start the docker service).'
+    Write-Host 'Then run this installer again. Nothing was downloaded or changed.'
+    throw 'Docker engine not reachable. Start Docker Desktop, then rerun the installer.'
+}
 docker compose version | Out-Null; Assert-Docker
 if ($Update) {
     $releases = Invoke-RestMethod 'https://api.github.com/repos/easyicetrusty/cryptotools/releases?per_page=20'

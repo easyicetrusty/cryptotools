@@ -5,6 +5,13 @@ RELEASE_VERSION='@RELEASE_VERSION@'
 PINNED_IMAGE='ghcr.io/easyicetrusty/cryptotools@sha256:@IMAGE_DIGEST@'
 case "${1:-install}" in install|update) action=${1:-install};; *) echo 'Usage: sh install.sh [install|update]' >&2; exit 2;; esac
 command -v docker >/dev/null 2>&1 || { echo 'Install Docker with Compose v2 first.' >&2; exit 1; }
+# Check the engine before anything else: a stopped Docker Desktop otherwise fails later with a confusing error.
+if ! docker info >/dev/null 2>&1; then
+  echo 'Docker is installed but its engine is not reachable.' >&2
+  echo 'Start Docker Desktop (on Linux: start the docker service, for example sudo systemctl start docker) and wait until the engine is running.' >&2
+  echo 'Then run this installer again. Nothing was downloaded or changed.' >&2
+  exit 1
+fi
 docker compose version >/dev/null
 : "${CRYPTOTOOLS_DIR:=$HOME/.cryptotools}"
 mkdir -p "$CRYPTOTOOLS_DIR"
