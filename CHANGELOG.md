@@ -1,8 +1,8 @@
 # What’s new
 
 ## 0.7.6 · Fixes from the Windows retest (unreleased candidate)
-- Opening a saved run now says so: "Showing the settings of Run #N". The test form is filled from that run (fee, capital, strategy, dates). Your earlier unsaved values are kept, and "Back to my previous form values" restores them. The sealed window start is not saved with a run, so it keeps the value you had instead of resetting to the default.
-- Export configuration: a sealed window start outside the test period now says so, naming the field, the date and the period, instead of "Request failed". The form shows the same message under the field as soon as the dates do not fit, before you export.
+- Opening a saved run now says so: "Showing the settings of Run #N". The test form is filled from that run (fee, capital, strategy, dates). Your earlier unsaved values are kept, and "Back to my previous form values" restores them. Ordinary backtests discard the form's sealed window start, so opening one keeps the value you had. Experiment runs retain the split in their evaluation protocol and load that saved split. A prior Trends selection cannot override the opened run's market; Back also restores the Trends form.
+- Export configuration: a sealed window start outside the test period now says so, naming the field, the date and the period, instead of "Request failed". The form shows the same message under the field as soon as the dates do not fit, before you export. Importing a validated preset immediately recomputes the field warning and accessibility state.
 - After a page refresh with a valid session the sign-in form no longer flashes. The screen waits for the session check; an expired session still shows sign-in.
 
 ## 0.7.5 · Fixes from the first Windows beta test (unreleased candidate)
