@@ -38,7 +38,7 @@ try{
  const note=await page.locator('#opened-run-note').innerText();assert.match(note,/Showing the settings of Run #1\./);
  const opened={capital:await form.locator('input[name=capital]').inputValue(),feeBps:await form.locator('input[name=feeBps]').inputValue(),split:await form.locator('input[name=split]').inputValue(),start:await form.locator('input[name=start]').inputValue()};
  assert.deepEqual(opened,{capital:'10000',feeBps:'80',split:before.split,start:'2026-10-01'});
- await page.screenshot({path:join(output,'opened-run-1440.png')});
+ assert.ok(await page.locator('#opened-run-note').evaluate(n=>{const r=n.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight}),'banner is scrolled into view after Open run'); await page.screenshot({path:join(output,'opened-run-1440.png')});
  check('Open run #1: form shows that run\'s own settings (fee 80, capital 10000), banner says so, sealed split keeps the user value',{before,opened,note});
  await page.getByRole('button',{name:'Back to my previous form values',exact:true}).click();await page.waitForFunction(()=>!document.querySelector('#opened-run-note'));
  const back={capital:await form.locator('input[name=capital]').inputValue(),feeBps:await form.locator('input[name=feeBps]').inputValue(),split:await form.locator('input[name=split]').inputValue(),start:await form.locator('input[name=start]').inputValue(),end:await form.locator('input[name=end]').inputValue()};
