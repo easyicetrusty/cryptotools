@@ -29,3 +29,5 @@ export const clearExpired=(message:string)=>/Login required/.test(message)?'':me
 export async function guardedDownload(e:{preventDefault():void,currentTarget:HTMLAnchorElement}){
  e.preventDefault();const href=e.currentTarget.href;const r=await fetch('/api/settings');if(!r.ok)return;const a=document.createElement('a');a.href=href;a.download='';document.body.append(a);a.click();a.remove();
 }
+// Hold the screen until the session check has returned, so a valid session never flashes the sign-in form.
+export const authView=(auth:any,ready:boolean,logged:boolean)=>auth===null||!ready?'loading':logged?'workspace':'sign-in';

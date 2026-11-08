@@ -1,5 +1,10 @@
 # What’s new
 
+## 0.7.6 · Fixes from the Windows retest (unreleased candidate)
+- Opening a saved run now says so: "Showing the settings of Run #N". The test form is filled from that run (fee, capital, strategy, dates). Your earlier unsaved values are kept, and "Back to my previous form values" restores them. The sealed window start is not saved with a run, so it keeps the value you had instead of resetting to the default.
+- Export configuration: a sealed window start outside the test period now says so, naming the field, the date and the period, instead of "Request failed". The form shows the same message under the field as soon as the dates do not fit, before you export.
+- After a page refresh with a valid session the sign-in form no longer flashes. The screen waits for the session check; an expired session still shows sign-in.
+
 ## 0.7.5 · Fixes from the first Windows beta test (unreleased candidate)
 - Security: the sign-in check now uses the matched route, not the raw URL. Before, a percent-encoded path such as `/%61pi/portfolio` reached user-data routes without a session. A regression test calls every API route without a session, also in encoded and normalised forms, and expects 401.
 - Expired session: any page or action that meets "Login required" now opens a sign-in dialog over the current page. After sign-in you are where you were, with the values you entered. The blocked request continues once after sign-in. No browser reload or saved form snapshot is used. A manual browser reload may lose unsaved input. CSV and report downloads check the session first instead of saving an error file.
